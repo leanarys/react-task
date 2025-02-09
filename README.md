@@ -1,2 +1,2 @@
-# technical-exam
+# react task
 Technical Exam
