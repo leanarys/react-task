@@ -2,7 +2,7 @@ import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 import { Routes, Route, Link } from "react-router-dom";
-import NewScreen from "./screens/sample";
+import HomeScreen from "./pages/home";
 
 // function App() {
 //   return (
@@ -27,9 +27,9 @@ import NewScreen from "./screens/sample";
 //   );
 // }
 
-const Home: React.FC = () => (
+const Home111: React.FC = () => (
   <div>
-    <h1>Home Screen</h1>
+    <h1>Home Screen1111</h1>
     <p>Welcome to the home page.</p>
   </div>
 );
@@ -37,13 +37,10 @@ const Home: React.FC = () => (
 const App: React.FC = () => {
   return (
     <div>
-      <nav>
-        <Link to="/">Home</Link> | <Link to="/new">New Screen</Link>
-      </nav>
-
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/new" element={<NewScreen />} />
+        <Route path="*" element={<HomeScreen />} />
+        <Route path="/" element={<HomeScreen />} />
+        <Route path="/new" element={<Home111 />} />
       </Routes>
     </div>
   );
