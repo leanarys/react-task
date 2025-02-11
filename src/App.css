@@ -40,3 +40,11 @@
 .read-the-docs {
   color: #888;
 }
+
+body {
+  background-color: #afe5f8;
+}
+
+.pointer {
+  cursor: pointer;
+}
