@@ -2,7 +2,7 @@
 
 ## Overview
 
-Error Find is a simple quiz application developed with React. It challenges users to identify the correct answers in various activities. After completing the quiz, users receive their final results based on their performance. Additionally, they can view the answer keys by selecting a question in the results.
+Error Find is a simple quiz application developed with React + TypeScript + Vite. It challenges users to identify the correct answers in various activities. After completing the quiz, users receive their final results based on their performance. Additionally, they can view the answer keys by selecting a question in the results.
 
 ## Features
 
