@@ -18,7 +18,7 @@ Error Find is a simple quiz application developed with React + TypeScript + Vite
 - Vite – Fast build tool for development and production.
 - HTML – Structures web pages.
 - CSS – Styles the user interface.
-
+  
 ## Installation
 
 To run the application locally, follow these steps:
@@ -35,12 +35,18 @@ To run the application locally, follow these steps:
    ```bash
    npm install
    ```
-4. Start the development server:
-   ```bash
-   ng serve
-   ```
-5. Open your browser and go to `http://localhost:4200/` to use the application.
 
+## Development Server
+
+To start the development server, run:
+   ```bash
+   npm run dev
+   ```
+Then, open your browser and go to http://localhost:5173/.
+
+## Build
+
+Run `npm build` to generate the production build. The output will be stored in the `dist/` directory.
 
 ## Usage
 1. Start the quiz by choosing an activity.
@@ -48,24 +54,6 @@ To run the application locally, follow these steps:
 3. Receive instant feedback after answering all questions.
 4. Review your final results at the end of the quiz.
 5. View the answer keys by selecting a question in the results.
-
-
-## Development server
-
-Run `npm run dev` to start the development server. Navigate to http://localhost:5173/ by default.
-
-## Build
-
-Run `npm build` to generate the production build. The output will be stored in the `dist/` directory.
-
-## React + TypeScript + Vite
-
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
 ## Contact
 
