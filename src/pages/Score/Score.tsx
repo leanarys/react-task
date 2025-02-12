@@ -18,6 +18,7 @@ interface ActivityResults {
   is_multi_round: boolean;
   questions: Question[];
   rounds?: Round[];
+  prevRoute?: string;
 }
 
 interface Round {
@@ -29,6 +30,7 @@ interface Round {
 const ScorePage: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
+
   const [activityResults, setActivityResults] =
     useState<ActivityResults | null>(null);
   const [openQuestionIndex, setOpenQuestionIndex] = useState<number | null>(
@@ -36,10 +38,14 @@ const ScorePage: React.FC = () => {
   );
   const [openRoundIndex, setOpenRoundIndex] = useState<number | null>(null);
 
+  console.log(location);
+
   useEffect(() => {
     const results = location.state as ActivityResults;
+
+    console.log("results", results);
     if (!results) {
-      navigate("/");
+      navigate("/"); // If no results navigate to home
     } else {
       setActivityResults(results);
       if (results.is_multi_round) {
@@ -49,6 +55,12 @@ const ScorePage: React.FC = () => {
         });
       }
     }
+
+    return () => {
+      if (location.state.prevRoute == "/activity") {
+        navigate("/"); // If no results navigate to home
+      }
+    };
   }, [location, navigate]);
 
   // Function to group questions into rounds
@@ -56,15 +68,16 @@ const ScorePage: React.FC = () => {
     const groupedRounds = Object.values(
       questions.reduce((acc, question) => {
         const roundKey = question.round_title;
-        if (!acc[roundKey]) {
-          acc[roundKey] = {
-            round_title: roundKey,
-            order: question.order,
-            questions: [],
-          };
+        if (roundKey) {
+          if (!acc[roundKey]) {
+            acc[roundKey] = {
+              round_title: roundKey,
+              order: question.order,
+              questions: [],
+            };
+          }
+          acc[roundKey].questions.push(question);
         }
-
-        acc[roundKey].questions.push(question);
         return acc;
       }, {} as Record<string, Round>)
     ).sort((a, b) => a.order - b.order);

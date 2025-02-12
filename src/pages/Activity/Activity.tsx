@@ -16,6 +16,7 @@ const ActivityPage: React.FC = () => {
 
   // Find activity by name when component mounts
   useEffect(() => {
+    hasMultipleRounds.current = false;
     if (!loading) {
       const selectedActivity = activities?.find(
         (act) => act.activity_name === name
@@ -31,9 +32,15 @@ const ActivityPage: React.FC = () => {
           ? true
           : false;
         console.log("Has multiple rounds:", hasMultipleRounds.current);
-        showRoundIndicator();
+        if (hasMultipleRounds.current) {
+          showRoundIndicator();
+        }
       }
     }
+
+    return () => {
+      hasMultipleRounds.current = false;
+    };
   }, [loading, activities, name, navigate]);
 
   // Show round card briefly
@@ -46,7 +53,10 @@ const ActivityPage: React.FC = () => {
   const handleAnswer = (isCorrect: boolean, question: any) => {
     console.log("handleAnswer");
     question.user_answer = isCorrect;
-    question.round_title = `Round ${currentRoundIndex + 1}`;
+
+    if (hasMultipleRounds.current) {
+      question.round_title = `Round ${currentRoundIndex + 1}`;
+    }
 
     const updatedResponses = [
       ...userResponses,
@@ -69,7 +79,6 @@ const ActivityPage: React.FC = () => {
         showRoundIndicator();
       }
     } else {
-      console.log("HAHAHAH");
       const hasNextQuestion =
         currentQuestionIndex < activity.questions.length - 1;
       console.log("hasNextQuestion", hasNextQuestion);
@@ -102,6 +111,7 @@ const ActivityPage: React.FC = () => {
         activity_name: activity.activity_name,
         is_multi_round: hasMultipleRounds.current,
         questions: userResponses,
+        prevRoute: "/activity",
       },
     });
   };
