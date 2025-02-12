@@ -1,16 +1,8 @@
-/* Accordion Styling */
-.accordion {
-  display: flex;
-  flex-direction: column;
-  text-align: center;
-  justify-content: center;
-}
-
 /* Accordion Items */
 .accordion-item {
   border: unset;
   width: 100%;
-  font-size: 14px;
+  font-size: 13px;
 
   background-color: var(--bg-items);
   color: var(--bright-blue);
@@ -19,16 +11,12 @@
   cursor: pointer;
   transition: background 0.3s;
   border: 1px solid var(--border-items);
-  border-radius: 0;
 }
 
 .accordion-item:hover {
   background-color: var(--accordion-hover);
-}
-
-button:focus,
-button:focus-visible {
-  outline: none;
+  border: 1px solid var(--border-items);
+  border-radius: 0;
 }
 
 /* Disabled state */
@@ -36,14 +24,6 @@ button:focus-visible {
   border: 1px solid var(--border-items);
   color: var(--text-disabled);
   pointer-events: none;
-}
-
-/* Accordion Content */
-.accordion-content {
-  background: var(--bg-white);
-  padding: 10px;
-  border-radius: 6px;
-  margin-top: 4px;
 }
 
 ul {

@@ -26,17 +26,22 @@ const DisplayCard: React.FC<DisplayCardProps> = ({
   };
 
   return (
-    <main className={styles.cardContainer}>
+    <main className={styles.main}>
       <div className={styles.cardContent}>
-        <div className="header">
+        <div className={styles.header}>
           <span>{smallHeader.toUpperCase()}</span>
           <h1>{mainHeader}</h1>
         </div>
-        <div className="dynamicContent">
+        <div className={styles.dynamicContent}>
           {children}
           {footer && (
             <div
-              className={`result ${footer === "HOME" ? "pointer" : ""}`}
+              className={[
+                styles.result,
+                footer === "HOME" ? styles.pointer : null,
+              ]
+                .filter(Boolean)
+                .join(" ")}
               onClick={() => {
                 if (footer === "HOME") {
                   navigate("/");

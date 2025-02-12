@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useActivityContext } from "../../context/hooks/useActivityContext"; // Context for shared data
+import styles from "./Activity.module.css";
 // import { Question } from "../types/quizTypes"; // TypeScript interface
 
 const ActivityPage: React.FC = () => {
@@ -121,45 +122,70 @@ const ActivityPage: React.FC = () => {
   return (
     <div>
       {showRoundCard && hasMultipleRounds.current && (
-        <div className="round-card">
-          <h1>ROUND {currentRoundIndex + 1}</h1>
+        <div className={styles.activityRoundCard}>
+          <div className={styles.activityHeaders}>
+            <h1 className={styles.activityName}>
+              {activity.activity_name.toUpperCase()}
+            </h1>
+            <h1 className={styles.activityQuestionNo}>
+              ROUND {currentRoundIndex + 1}
+            </h1>
+          </div>
         </div>
       )}
 
+      {/* Single round */}
       {!hasMultipleRounds.current && (
-        <div className="activity-container">
-          <h2>{activity.activity_name.toUpperCase()}</h2>
-          <h1>Q{currentQuestionIndex + 1}.</h1>
+        <div className={styles.activityContainer}>
+          <div className={styles.activityHeaders}>
+            <h1 className={styles.activityName}>
+              {activity.activity_name.toUpperCase()}
+            </h1>
+            <h1 className={styles.activityQuestionNo}>
+              Q{currentQuestionIndex + 1}.
+            </h1>
+          </div>
+
           <p
+            className={styles.activityQuestionTxt}
             dangerouslySetInnerHTML={{
               __html: activity.questions[currentQuestionIndex].stimulus,
             }}
           />
-          <button
-            onClick={() =>
-              handleAnswer(true, activity.questions[currentQuestionIndex])
-            }
-          >
-            CORRECT
-          </button>
-          <button
-            onClick={() =>
-              handleAnswer(false, activity.questions[currentQuestionIndex])
-            }
-          >
-            INCORRECT
-          </button>
+          <div className={styles.activityBtns}>
+            <button
+              onClick={() =>
+                handleAnswer(true, activity.questions[currentQuestionIndex])
+              }
+            >
+              CORRECT
+            </button>
+            <button
+              onClick={() =>
+                handleAnswer(false, activity.questions[currentQuestionIndex])
+              }
+            >
+              INCORRECT
+            </button>
+          </div>
         </div>
       )}
 
+      {/* Multiple rounds */}
       {hasMultipleRounds.current && !showRoundCard && (
-        <div className="activity-container">
-          <h1>
-            {activity.activity_name.toUpperCase()} /{" "}
-            {activity.questions[currentRoundIndex].round_title.toUpperCase()}
-          </h1>
-          <h1>Q{currentQuestionIndex + 1}.</h1>
+        <div className={styles.activityContainer}>
+          <div className={styles.activityHeaders}>
+            <h1 className={styles.activityName}>
+              {activity.activity_name.toUpperCase()} /{" "}
+              {activity.questions[currentRoundIndex].round_title.toUpperCase()}
+            </h1>
+            <h1 className={styles.activityQuestioNo}>
+              Q{currentQuestionIndex + 1}.
+            </h1>
+          </div>
+
           <p
+            className={styles.activityQuestionTxt}
             dangerouslySetInnerHTML={{
               __html:
                 activity.questions[currentRoundIndex].questions[
@@ -167,30 +193,33 @@ const ActivityPage: React.FC = () => {
                 ].stimulus,
             }}
           />
-          <button
-            onClick={() =>
-              handleAnswer(
-                true,
-                activity.questions[currentRoundIndex].questions[
-                  currentQuestionIndex
-                ]
-              )
-            }
-          >
-            CORRECT
-          </button>
-          <button
-            onClick={() =>
-              handleAnswer(
-                false,
-                activity.questions[currentRoundIndex].questions[
-                  currentQuestionIndex
-                ]
-              )
-            }
-          >
-            INCORRECT
-          </button>
+
+          <div className={styles.activityBtns}>
+            <button
+              onClick={() =>
+                handleAnswer(
+                  true,
+                  activity.questions[currentRoundIndex].questions[
+                    currentQuestionIndex
+                  ]
+                )
+              }
+            >
+              CORRECT
+            </button>
+            <button
+              onClick={() =>
+                handleAnswer(
+                  false,
+                  activity.questions[currentRoundIndex].questions[
+                    currentQuestionIndex
+                  ]
+                )
+              }
+            >
+              INCORRECT
+            </button>
+          </div>
         </div>
       )}
     </div>

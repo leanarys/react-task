@@ -1,0 +1,122 @@
+.container {
+  width: 90%;
+  max-width: 320px;
+  margin: 20px auto;
+  background: #f5faff;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  font-family: Arial, sans-serif;
+}
+
+.score-container {
+  height: 245px;
+  overflow-y: auto;
+}
+
+/* Target the scrollbar */
+.score-container::-webkit-scrollbar {
+  width: 10px; /* Thin width */
+}
+
+/* Scrollbar track */
+.score-container::-webkit-scrollbar-track {
+  background: rgba(173, 216, 230, 0.3); /* Light blue with transparency */
+  border-radius: 10px; /* Rounded edges */
+  border: 1px solid #bde0fd;
+}
+
+/* Scrollbar thumb (the moving part) */
+.score-container::-webkit-scrollbar-thumb {
+  background: var(--bright-blue); /* Bright blue */
+  border-radius: 10px; /* Rounded */
+}
+
+/* Scrollbar thumb on hover */
+.score-container::-webkit-scrollbar-thumb:hover {
+  background: #1976d2; /* Darker blue on hover */
+}
+
+.results-title {
+  font-size: 24px;
+  font-weight: bold;
+  color: var(--bright-blue);
+}
+
+.result-item {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  border: unset;
+  font-size: 13px;
+
+  background-color: var(--bg-items);
+  color: var(--bright-blue);
+  padding: 16px 16px;
+  text-align: center;
+  cursor: pointer;
+  transition: background 0.3s;
+  border: 1px solid var(--border-items);
+}
+
+.feedback-details {
+  flex-basis: 100%;
+  margin: 15px;
+}
+.feedback-icon {
+  text-align: left;
+  flex-basis: 100%;
+}
+.feedback-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.feedback-item > p {
+  flex-basis: 100%;
+  text-align: left;
+}
+.fb-corect > p {
+  margin-bottom: 0;
+}
+
+.answer {
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.correct {
+  color: var(--bright-blue);
+}
+
+.incorrect {
+  color: var(--bright-blue);
+}
+
+.home-link {
+  display: block;
+  margin-top: 20px;
+  text-decoration: none;
+  color: #3498ff;
+  font-weight: bold;
+}
+
+/** Single Rounds */
+.single-round-results {
+}
+
+/** Multi Rounds */
+.round-header {
+  font-weight: bold;
+  font-size: 13px;
+  background-color: var(--bg-items);
+  color: var(--bright-blue);
+  padding: 16px 16px;
+  text-align: center;
+  cursor: pointer;
+  transition: background 0.3s;
+  border: 1px solid var(--border-items);
+}
+.round-container {
+}

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import DisplayCard from "../../components/DisplayCard/DisplayCard";
+import styles from "./Score.module.css";
 // import DisplayCard from "../../components/DisplayCard/DisplayCard";
 // import Button from "../../components/Button/Button";
 
@@ -107,37 +108,50 @@ const ScorePage: React.FC = () => {
       footer="HOME"
       // directory="/about"
     >
-      <div className="score-container">
+      <div className={styles.scoreContainer}>
         {/* Single Round Results */}
         {!activityResults.is_multi_round ? (
-          <div className="single-round-results">
+          <div className={styles.singeRoundResults}>
             {activityResults.questions.map((item, index) => (
               <div
                 key={index}
-                className="result-item"
+                className={styles.resultItem}
                 onClick={() => toggleFeedback(index)}
               >
-                <span className="question">Q{item.order}</span>
+                <span className={styles.question}>Q{item.order}</span>
                 <span
-                  className={`answer ${
+                  className={[
+                    styles.answer,
                     item.is_correct === item.user_answer
-                      ? "correct"
-                      : "incorrect"
-                  }`}
+                      ? styles.correct
+                      : styles.incorrect,
+                  ]
+                    .filter(Boolean)
+                    .join(" ")}
                 >
                   {item.is_correct === item.user_answer ? "CORRECT" : "FALSE"}
                 </span>
 
                 {openQuestionIndex === index && (
-                  <div className="feedback-details">
-                    <div className="feedback-item">
-                      <span className="icon">❌</span>
-                      <strong>Wrong:</strong>
-                      <p dangerouslySetInnerHTML={{ __html: item.stimulus }} />
-                    </div>
-                    <div className="feedback-item fb-correct">
-                      <span className="icon">✅</span>
-                      <strong>Correct:</strong>
+                  <div className={styles.feedbackDetails}>
+                    <div
+                      className={[styles.feedbackItem, styles.fbCorrect].join(
+                        " "
+                      )}
+                    >
+                      <div className={styles.feedbackIcon}>
+                        {item.is_correct === item.user_answer ? (
+                          <span className={styles.icon}>🟢</span>
+                        ) : (
+                          <span className={styles.icon}>🟡</span>
+                        )}
+
+                        <strong>
+                          {item.is_correct === item.user_answer
+                            ? " You are correct!"
+                            : " Correct answer is:"}
+                        </strong>
+                      </div>
                       <p dangerouslySetInnerHTML={{ __html: item.feedback }} />
                     </div>
                   </div>
@@ -148,24 +162,30 @@ const ScorePage: React.FC = () => {
         ) : (
           // Multi Round Results
           activityResults.rounds?.map((round, roundIndex) => (
-            <div key={roundIndex} className="multi-round-results">
-              <h3>Round {roundIndex + 1 || "N/A"}</h3>
-              <div className="round-container">
+            <div key={roundIndex} className={styles.multiRoundResults}>
+              <div className={styles.roundHeader}>
+                {/* Round {roundIndex + 1 || "N/A"} */}
+                {round.round_title.toUpperCase()}
+              </div>
+              <div className={styles.roundContainer}>
                 {round.questions.map((item, questionIndex) => (
                   <div
                     key={questionIndex}
-                    className="result-item"
+                    className={styles.resultItem}
                     onClick={() =>
                       toggleFeedbackByRound(roundIndex, questionIndex)
                     }
                   >
-                    <span className="question">Q{item.order}</span>
+                    <span className={styles.question}>Q{item.order}</span>
                     <span
-                      className={`answer ${
+                      className={[
+                        styles.answer,
                         item.is_correct === item.user_answer
-                          ? "correct"
-                          : "incorrect"
-                      }`}
+                          ? styles.correct
+                          : styles.incorrect,
+                      ]
+                        .filter(Boolean)
+                        .join(" ")}
                     >
                       {item.is_correct === item.user_answer
                         ? "CORRECT"
@@ -174,19 +194,26 @@ const ScorePage: React.FC = () => {
 
                     {openRoundIndex === roundIndex &&
                       openQuestionIndex === questionIndex && (
-                        <div className="feedback-details">
-                          <div className="feedback-item">
-                            <span className="icon">❌</span>
-                            <strong>Wrong:</strong>
-                            <p
-                              dangerouslySetInnerHTML={{
-                                __html: item.stimulus,
-                              }}
-                            />
-                          </div>
-                          <div className="feedback-item fb-correct">
-                            <span className="icon">✅</span>
-                            <strong>Correct:</strong>
+                        <div className={styles.feedbackDetails}>
+                          <div
+                            className={[
+                              styles.feedbackItem,
+                              styles.fbCorrect,
+                            ].join(" ")}
+                          >
+                            <div className={styles.feedbackIcon}>
+                              {item.is_correct === item.user_answer ? (
+                                <span className={styles.icon}>🟢</span>
+                              ) : (
+                                <span className={styles.icon}>🟡</span>
+                              )}
+
+                              <strong>
+                                {item.is_correct === item.user_answer
+                                  ? " You are correct!"
+                                  : " Correct answer is:"}
+                              </strong>
+                            </div>
                             <p
                               dangerouslySetInnerHTML={{
                                 __html: item.feedback,

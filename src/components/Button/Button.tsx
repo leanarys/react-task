@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import "./Button.css"; // Import regular CSS file
+import styles from "./Button.module.css";
 
 type ButtonProps = {
   label: string;
@@ -14,7 +14,6 @@ const Button: React.FC<ButtonProps> = ({
   label,
   onClick,
   to,
-  variant = "primary",
   disabled = false,
 }) => {
   const navigate = useNavigate();
@@ -29,11 +28,11 @@ const Button: React.FC<ButtonProps> = ({
 
   return (
     <button
-      className={`btn ${variant}`}
+      className={styles.accordionItem}
       onClick={handleClick}
       disabled={disabled}
     >
-      {label}
+      {label.toUpperCase()}
     </button>
   );
 };
