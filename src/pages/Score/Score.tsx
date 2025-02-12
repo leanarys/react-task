@@ -36,7 +36,6 @@ const ScorePage: React.FC = () => {
   );
   const [openRoundIndex, setOpenRoundIndex] = useState<number | null>(null);
 
-  // console.log("activityResults", activityResults);
   useEffect(() => {
     const results = location.state as ActivityResults;
     if (!results) {
@@ -54,12 +53,9 @@ const ScorePage: React.FC = () => {
 
   // Function to group questions into rounds
   const groupQuestionsByRound = (questions: Question[]): Round[] => {
-    console.log("questions", questions);
     const groupedRounds = Object.values(
       questions.reduce((acc, question) => {
-        console.log("1question", question);
         const roundKey = question.round_title;
-        // console.log("question.order", question.order);
         if (!acc[roundKey]) {
           acc[roundKey] = {
             round_title: roundKey,
@@ -72,7 +68,6 @@ const ScorePage: React.FC = () => {
         return acc;
       }, {} as Record<string, Round>)
     ).sort((a, b) => a.order - b.order);
-    console.log("groupedRounds", groupedRounds);
     return groupedRounds;
   };
 

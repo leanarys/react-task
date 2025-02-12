@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useActivityContext } from "../../context/hooks/useActivityContext"; // Context for shared data
 // import { Question } from "../types/quizTypes"; // TypeScript interface
@@ -12,6 +12,7 @@ const ActivityPage: React.FC = () => {
   const [currentRoundIndex, setCurrentRoundIndex] = useState(0);
   const [userResponses, setUserResponses] = useState<Question[]>([]);
   const [showRoundCard, setShowRoundCard] = useState(false);
+  const hasMultipleRounds = useRef<boolean>(false);
 
   // Find activity by name when component mounts
   useEffect(() => {
@@ -20,11 +21,16 @@ const ActivityPage: React.FC = () => {
         (act) => act.activity_name === name
       );
 
-      // console.log("=====", selectedActivity);
       if (!selectedActivity) {
         navigate("/not-found");
       } else {
         setActivity(selectedActivity);
+
+        hasMultipleRounds.current = selectedActivity?.questions?.[0]
+          ?.round_title
+          ? true
+          : false;
+        console.log("Has multiple rounds:", hasMultipleRounds.current);
         showRoundIndicator();
       }
     }
@@ -38,15 +44,18 @@ const ActivityPage: React.FC = () => {
 
   // Function to handle user answers for both normal and round-based questions
   const handleAnswer = (isCorrect: boolean, question: any) => {
+    console.log("handleAnswer");
+    question.user_answer = isCorrect;
+    question.round_title = `Round ${currentRoundIndex + 1}`;
+
     const updatedResponses = [
       ...userResponses,
       { ...question, user_answer: isCorrect },
     ];
 
-    console.log("updatedResponses", updatedResponses);
     setUserResponses(updatedResponses);
-
-    if (hasMultipleRounds) {
+    if (hasMultipleRounds.current) {
+      console.log("======");
       const currentRound = activity.questions[currentRoundIndex];
       const hasNextQuestion =
         currentQuestionIndex < currentRound.questions.length - 1;
@@ -60,13 +69,9 @@ const ActivityPage: React.FC = () => {
         showRoundIndicator();
       }
     } else {
+      console.log("HAHAHAH");
       const hasNextQuestion =
         currentQuestionIndex < activity.questions.length - 1;
-      console.log("currentQuestionIndex", currentQuestionIndex);
-      console.log(
-        "activity.questions.length - 1",
-        activity.questions.length - 1
-      );
       console.log("hasNextQuestion", hasNextQuestion);
       if (hasNextQuestion) {
         setCurrentQuestionIndex((prev) => prev + 1);
@@ -77,13 +82,12 @@ const ActivityPage: React.FC = () => {
   // Ensure navigation happens only after userResponses updates
   useEffect(() => {
     if (userResponses.length > 0) {
-      const totalQuestions = hasMultipleRounds
+      const totalQuestions = hasMultipleRounds.current
         ? activity.questions.reduce(
             (acc, round) => acc + round.questions.length,
             0
           )
         : activity.questions.length;
-
       if (userResponses.length === totalQuestions) {
         console.log("All responses collected, navigating to score.");
         navigateToScore();
@@ -96,31 +100,23 @@ const ActivityPage: React.FC = () => {
     navigate("/score", {
       state: {
         activity_name: activity.activity_name,
-        is_multi_round: hasMultipleRounds,
+        is_multi_round: hasMultipleRounds.current,
         questions: userResponses,
       },
     });
   };
 
-  // Check if activity has multiple rounds
-  const hasMultipleRounds =
-    activity?.questions?.[0]?.round_title ||
-    activity?.questions?.[0]?.questions;
-
   if (loading || !activity) return <p>Loading...</p>;
-
-  console.log("showRoundCard", showRoundCard);
-  console.log("hasMultipleRounds", hasMultipleRounds);
 
   return (
     <div>
-      {showRoundCard && hasMultipleRounds && (
+      {showRoundCard && hasMultipleRounds.current && (
         <div className="round-card">
           <h1>ROUND {currentRoundIndex + 1}</h1>
         </div>
       )}
 
-      {!hasMultipleRounds && (
+      {!hasMultipleRounds.current && (
         <div className="activity-container">
           <h2>{activity.activity_name.toUpperCase()}</h2>
           <h1>Q{currentQuestionIndex + 1}.</h1>
@@ -146,7 +142,7 @@ const ActivityPage: React.FC = () => {
         </div>
       )}
 
-      {hasMultipleRounds && !showRoundCard && (
+      {hasMultipleRounds.current && !showRoundCard && (
         <div className="activity-container">
           <h1>
             {activity.activity_name.toUpperCase()} /{" "}

@@ -31,14 +31,6 @@ export type ActivityData = Activity[];
 const HomePage = () => {
   const { activities, loading } = useActivityContext();
 
-  // let loading = true;
-
-  // setTimeout(() => {
-  //   console.log("Delayed for 1 second.");
-  //   loading = false;
-  // }, 2000);
-
-  // console.log("loading", loading);
   if (loading) {
     return (
       <div className="spinner-container">
