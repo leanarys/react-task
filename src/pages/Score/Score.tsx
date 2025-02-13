@@ -2,38 +2,13 @@ import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import DisplayCard from "../../components/DisplayCard/DisplayCard";
 import styles from "./Score.module.css";
-// import DisplayCard from "../../components/DisplayCard/DisplayCard";
-// import Button from "../../components/Button/Button";
-
-interface Question {
-  order: number;
-  stimulus: string;
-  feedback: string;
-  is_correct: boolean;
-  user_answer: boolean;
-  round_title?: string;
-}
-
-interface ActivityResults {
-  activity_name: string;
-  is_multi_round: boolean;
-  questions: Question[];
-  rounds?: Round[];
-  prevRoute?: string;
-}
-
-interface Round {
-  round_title: string;
-  order: number;
-  questions: Question[];
-}
-
+import { Activity, Question, Round } from "../../types/quiz-interface";
+import { parseBoldText } from "../../helpers/parseBoldText";
 const ScorePage: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const [activityResults, setActivityResults] =
-    useState<ActivityResults | null>(null);
+  const [activityResults, setActivityResults] = useState<Activity | null>(null);
   const [openQuestionIndex, setOpenQuestionIndex] = useState<number | null>(
     null
   );
@@ -42,14 +17,15 @@ const ScorePage: React.FC = () => {
   console.log(location);
 
   useEffect(() => {
-    const results = location.state as ActivityResults;
+    const results = location.state as Activity;
 
     console.log("results", results);
     if (!results) {
       navigate("/"); // If no results navigate to home
+      console.log("navigate");
     } else {
       setActivityResults(results);
-      if (results.is_multi_round) {
+      if (results?.is_multi_round && results?.questions) {
         setActivityResults({
           ...results,
           rounds: groupQuestionsByRound(results.questions),
@@ -58,7 +34,7 @@ const ScorePage: React.FC = () => {
     }
 
     return () => {
-      if (location.state.prevRoute == "/activity") {
+      if (location.state.prev_route == "/activity") {
         navigate("/"); // If no results navigate to home
       }
     };
@@ -106,13 +82,14 @@ const ScorePage: React.FC = () => {
       smallHeader={activityResults.activity_name}
       mainHeader="RESULTS"
       footer="HOME"
+      altText="Displays answer scores"
       // directory="/about"
     >
       <div className={styles.scoreContainer}>
         {/* Single Round Results */}
         {!activityResults.is_multi_round ? (
           <div className={styles.singeRoundResults}>
-            {activityResults.questions.map((item, index) => (
+            {activityResults?.questions?.map((item, index) => (
               <div
                 key={index}
                 className={styles.resultItem}
@@ -152,7 +129,11 @@ const ScorePage: React.FC = () => {
                             : " Correct answer is:"}
                         </strong>
                       </div>
-                      <p dangerouslySetInnerHTML={{ __html: item.feedback }} />
+                      <p
+                        dangerouslySetInnerHTML={{
+                          __html: parseBoldText(item.feedback),
+                        }}
+                      />
                     </div>
                   </div>
                 )}
@@ -216,7 +197,7 @@ const ScorePage: React.FC = () => {
                             </div>
                             <p
                               dangerouslySetInnerHTML={{
-                                __html: item.feedback,
+                                __html: parseBoldText(item.feedback),
                               }}
                             />
                           </div>

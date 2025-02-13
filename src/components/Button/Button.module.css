@@ -3,7 +3,7 @@
   border: unset;
   width: 100%;
   font-size: 13px;
-
+  border-radius: 0;
   background-color: var(--bg-items);
   color: var(--bright-blue);
   padding: 16px 16px;

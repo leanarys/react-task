@@ -4,7 +4,7 @@
   border-radius: 2px;
   box-shadow: 0px 0px 1.5px var(--bright-blue);
   animation: fadeIn1 0.3s ease-in-out forwards;
-  max-width: 440px;
+  max-width: 250px;
 }
 
 /* Card Content */

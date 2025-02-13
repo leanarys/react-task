@@ -1,14 +1,15 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { useActivityContext } from "../../context/hooks/useActivityContext"; // Context for shared data
+import { useActivityContext } from "../../hooks/useActivityContext"; // Context for shared data
 import styles from "./Activity.module.css";
-// import { Question } from "../types/quizTypes"; // TypeScript interface
+import { Activity, Question } from "../../types/quiz-interface";
+import { parseBoldText } from "../../helpers/parseBoldText";
 
 const ActivityPage: React.FC = () => {
-  const { activities, loading } = useActivityContext(); // Get activities from context
+  const { quizTemplate, loading } = useActivityContext(); // Get activities from context
   const { name } = useParams(); // Get activity name from route
   const navigate = useNavigate(); // Router navigation
-  const [activity, setActivity] = useState<any>(null);
+  const [activity, setActivity] = useState<Activity | null>(null);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [currentRoundIndex, setCurrentRoundIndex] = useState(0);
   const [userResponses, setUserResponses] = useState<Question[]>([]);
@@ -19,7 +20,7 @@ const ActivityPage: React.FC = () => {
   useEffect(() => {
     hasMultipleRounds.current = false;
     if (!loading) {
-      const selectedActivity = activities?.find(
+      const selectedActivity = quizTemplate?.activities?.find(
         (act) => act.activity_name === name
       );
 
@@ -32,7 +33,6 @@ const ActivityPage: React.FC = () => {
           ?.round_title
           ? true
           : false;
-        console.log("Has multiple rounds:", hasMultipleRounds.current);
         if (hasMultipleRounds.current) {
           showRoundIndicator();
         }
@@ -42,7 +42,7 @@ const ActivityPage: React.FC = () => {
     return () => {
       hasMultipleRounds.current = false;
     };
-  }, [loading, activities, name, navigate]);
+  }, [loading, quizTemplate?.activities, name, navigate]);
 
   // Show round card briefly
   const showRoundIndicator = () => {
@@ -51,8 +51,8 @@ const ActivityPage: React.FC = () => {
   };
 
   // Function to handle user answers for both normal and round-based questions
-  const handleAnswer = (isCorrect: boolean, question: any) => {
-    console.log("handleAnswer");
+  const handleAnswer = (isCorrect: boolean, question: Question) => {
+    // console.log("handleAnswer");
     question.user_answer = isCorrect;
 
     if (hasMultipleRounds.current) {
@@ -65,9 +65,10 @@ const ActivityPage: React.FC = () => {
     ];
 
     setUserResponses(updatedResponses);
+    if (!activity) return;
     if (hasMultipleRounds.current) {
-      console.log("======");
       const currentRound = activity.questions[currentRoundIndex];
+      if (!currentRound || !currentRound.questions) return;
       const hasNextQuestion =
         currentQuestionIndex < currentRound.questions.length - 1;
       const hasNextRound = currentRoundIndex < activity.questions.length - 1;
@@ -93,11 +94,12 @@ const ActivityPage: React.FC = () => {
   useEffect(() => {
     if (userResponses.length > 0) {
       const totalQuestions = hasMultipleRounds.current
-        ? activity.questions.reduce(
-            (acc, round) => acc + round.questions.length,
+        ? activity?.questions.reduce(
+            (acc, round) =>
+              acc + (round.questions ? round.questions?.length : 0),
             0
           )
-        : activity.questions.length;
+        : activity?.questions.length;
       if (userResponses.length === totalQuestions) {
         console.log("All responses collected, navigating to score.");
         navigateToScore();
@@ -109,10 +111,10 @@ const ActivityPage: React.FC = () => {
   const navigateToScore = () => {
     navigate("/score", {
       state: {
-        activity_name: activity.activity_name,
+        activity_name: activity?.activity_name,
         is_multi_round: hasMultipleRounds.current,
         questions: userResponses,
-        prevRoute: "/activity",
+        prev_route: "/activity",
       },
     });
   };
@@ -149,7 +151,9 @@ const ActivityPage: React.FC = () => {
           <p
             className={styles.activityQuestionTxt}
             dangerouslySetInnerHTML={{
-              __html: activity.questions[currentQuestionIndex].stimulus,
+              __html: parseBoldText(
+                activity.questions[currentQuestionIndex].stimulus
+              ),
             }}
           />
           <div className={styles.activityBtns}>
@@ -177,7 +181,9 @@ const ActivityPage: React.FC = () => {
           <div className={styles.activityHeaders}>
             <h1 className={styles.activityName}>
               {activity.activity_name.toUpperCase()} /{" "}
-              {activity.questions[currentRoundIndex].round_title.toUpperCase()}
+              {activity?.questions?.[
+                currentRoundIndex
+              ]?.round_title?.toUpperCase() ?? "Default Title"}
             </h1>
             <h1 className={styles.activityQuestioNo}>
               Q{currentQuestionIndex + 1}.
@@ -187,35 +193,40 @@ const ActivityPage: React.FC = () => {
           <p
             className={styles.activityQuestionTxt}
             dangerouslySetInnerHTML={{
-              __html:
-                activity.questions[currentRoundIndex].questions[
+              __html: parseBoldText(
+                activity.questions?.[currentRoundIndex]?.questions?.[
                   currentQuestionIndex
-                ].stimulus,
+                ]?.stimulus ?? "Default Stimulus"
+              ),
             }}
           />
 
           <div className={styles.activityBtns}>
             <button
-              onClick={() =>
-                handleAnswer(
-                  true,
-                  activity.questions[currentRoundIndex].questions[
-                    currentQuestionIndex
-                  ]
-                )
-              }
+              onClick={() => {
+                if (!activity.questions && !activity.questions) {
+                  handleAnswer(
+                    true,
+                    activity.questions[currentRoundIndex].questions[
+                      currentQuestionIndex
+                    ]
+                  );
+                }
+              }}
             >
               CORRECT
             </button>
             <button
-              onClick={() =>
-                handleAnswer(
-                  false,
-                  activity.questions[currentRoundIndex].questions[
-                    currentQuestionIndex
-                  ]
-                )
-              }
+              onClick={() => {
+                if (!activity.questions && !activity.questions) {
+                  handleAnswer(
+                    false,
+                    activity.questions[currentRoundIndex].questions[
+                      currentQuestionIndex
+                    ]
+                  );
+                }
+              }}
             >
               INCORRECT
             </button>

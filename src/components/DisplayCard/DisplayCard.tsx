@@ -1,24 +1,18 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./DisplayCard.module.css";
-
-type DisplayCardProps = {
-  smallHeader?: string;
-  mainHeader?: string;
-  footer?: string;
-  directory?: string;
-  children?: React.ReactNode;
-};
+import { DisplayCardProps } from "../../types/quiz-interface";
 
 const DisplayCard: React.FC<DisplayCardProps> = ({
   smallHeader = "",
   mainHeader = "",
   footer = "",
   directory = "",
+  altText = "",
   children,
 }) => {
+  const homeText = "HOME";
   const navigate = useNavigate();
-
   const navigateTo = (dir: string) => {
     if (dir.trim()) {
       navigate(dir.startsWith("/") ? dir : `/${dir}`);
@@ -27,7 +21,7 @@ const DisplayCard: React.FC<DisplayCardProps> = ({
 
   return (
     <main className={styles.main}>
-      <div className={styles.cardContent}>
+      <div className={styles.cardContent} title={altText}>
         <div className={styles.header}>
           <span>{smallHeader.toUpperCase()}</span>
           <h1>{mainHeader}</h1>
@@ -38,12 +32,12 @@ const DisplayCard: React.FC<DisplayCardProps> = ({
             <div
               className={[
                 styles.result,
-                footer === "HOME" ? styles.pointer : null,
+                footer === homeText ? styles.pointer : null,
               ]
                 .filter(Boolean)
                 .join(" ")}
               onClick={() => {
-                if (footer === "HOME") {
+                if (footer === homeText) {
                   navigate("/");
                 } else if (directory) {
                   navigateTo(directory);

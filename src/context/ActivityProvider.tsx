@@ -1,20 +1,20 @@
 import React, { useState, useEffect } from "react";
-import { ActivityContext, ActivityContextType } from "./ActivityContext"; // ✅ Ensure correct import
-import { fetchActivityTemplate } from "../services/api";
+import { ActivityContext } from "../context/ActivityContext";
+import { fetchQuizTemplate } from "../services/api";
+import { QuizTemplate } from "../types/quiz-interface";
 
 export const ActivityProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [activities, setActivities] = useState<
-    ActivityContextType["activities"]
-  >([]);
+  const [quizTemplate, setQuizTemplate] = useState<QuizTemplate>();
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
+    console.log("");
     const getActivities = async () => {
       try {
-        const data = await fetchActivityTemplate();
-        setActivities(data);
+        const data = await fetchQuizTemplate();
+        setQuizTemplate(data);
       } catch (error) {
         console.error("Failed to fetch activities", error);
       } finally {
@@ -24,9 +24,8 @@ export const ActivityProvider: React.FC<{ children: React.ReactNode }> = ({
 
     getActivities();
   }, []);
-
   return (
-    <ActivityContext.Provider value={{ activities, loading }}>
+    <ActivityContext.Provider value={{ quizTemplate, loading }}>
       {children}
     </ActivityContext.Provider>
   );

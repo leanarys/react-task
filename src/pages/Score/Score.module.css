@@ -1,14 +1,3 @@
-.container {
-  width: 90%;
-  max-width: 320px;
-  margin: 20px auto;
-  background: #f5faff;
-  padding: 20px;
-  border-radius: 10px;
-  text-align: center;
-  font-family: Arial, sans-serif;
-}
-
 .score-container {
   height: 245px;
   overflow-y: auto;
@@ -102,10 +91,6 @@
   font-weight: bold;
 }
 
-/** Single Rounds */
-.single-round-results {
-}
-
 /** Multi Rounds */
 .round-header {
   font-weight: bold;
@@ -117,6 +102,4 @@
   cursor: pointer;
   transition: background 0.3s;
   border: 1px solid var(--border-items);
-}
-.round-container {
 }

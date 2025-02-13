@@ -1,9 +1,5 @@
 import { createContext } from "react";
-
-export type ActivityContextType = {
-  activities: any[];
-  loading: boolean;
-};
+import { ActivityContextType } from "../types/quiz-interface";
 
 export const ActivityContext = createContext<ActivityContextType | undefined>(
   undefined
