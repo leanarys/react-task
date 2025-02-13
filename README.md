@@ -1,46 +1,60 @@
-# Getting Started with Create React App
+# Error Find - Quiz Application
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Overview
 
-## Available Scripts
+Error Find is a simple quiz application developed with React + TypeScript + Vite. It challenges users to identify the correct answers in various activities. After completing the quiz, users receive their final results based on their performance. Additionally, they can view the answer keys by selecting a question in the results.
 
-In the project directory, you can run:
+## Features
 
-### `npm start`
+- Interactive quiz experience
+- Two distinct activities
+- Comprehensive result summary
+- Answer keys included in the final results
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Technologies Used
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+- React – Library for building interactive UIs.
+- TypeScript – Adds static typing to JavaScript.
+- Vite – Fast build tool for development and production.
+- HTML – Structures web pages.
+- CSS – Styles the user interface.
+  
+## Installation
 
-### `npm test`
+To run the application locally, follow these steps:
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/leanarys/react-task.git
+   ```
+2. Navigate to the project directory:
+   ```bash
+   cd react-task
+   ```
+3. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-### `npm run build`
+## Development Server
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+To start the development server, run:
+   ```bash
+   npm run dev
+   ```
+Then, open your browser and go to http://localhost:5173/.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Build
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Run `npm build` to generate the production build. The output will be stored in the `dist/` directory.
 
-### `npm run eject`
+## Usage
+1. Start the quiz by choosing an activity.
+2. Select the answers for the given questions.
+3. Receive instant feedback after answering all questions.
+4. Review your final results at the end of the quiz.
+5. View the answer keys by selecting a question in the results.
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+## Contact
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+For any inquiries, reach out via mary.leana.n.reyes@gmail.com

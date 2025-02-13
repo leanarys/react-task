@@ -1,0 +1,86 @@
+/* Accordion Styling */
+.accordion {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  justify-content: center;
+}
+
+.home-container {
+  overflow-y: auto;
+  height: 245px;
+}
+
+/* Target the scrollbar */
+.home-container::-webkit-scrollbar {
+  width: 10px; /* Thin width */
+}
+
+/* Scrollbar track */
+.home-container::-webkit-scrollbar-track {
+  background: rgba(173, 216, 230, 0.3); /* Light blue with transparency */
+  border-radius: 10px; /* Rounded edges */
+  border: 1px solid #bde0fd;
+}
+
+/* Scrollbar thumb (the moving part) */
+.home-container::-webkit-scrollbar-thumb {
+  background: var(--bright-blue); /* Bright blue */
+  border-radius: 10px; /* Rounded */
+}
+
+/* Scrollbar thumb on hover */
+.home-container::-webkit-scrollbar-thumb:hover {
+  background: #1976d2; /* Darker blue on hover */
+}
+
+/* Accordion Items */
+.accordion-item {
+  border: unset;
+  width: 100%;
+  font-size: 14px;
+
+  background-color: var(--bg-items);
+  color: var(--bright-blue);
+  padding: 16px 16px;
+  text-align: center;
+  cursor: pointer;
+  transition: background 0.3s;
+  border: 1px solid var(--border-items);
+  border-radius: 0;
+}
+
+.accordion-item:hover {
+  background-color: var(--accordion-hover);
+}
+
+button:focus,
+button:focus-visible {
+  outline: none;
+}
+
+/* Disabled state */
+.accordion-item:disabled {
+  border: 1px solid var(--border-items);
+  color: var(--text-disabled);
+  pointer-events: none;
+}
+
+/* Accordion Content */
+.accordion-content {
+  background: var(--bg-white);
+  padding: 10px;
+  border-radius: 6px;
+  margin-top: 4px;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+li {
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: #333;
+}

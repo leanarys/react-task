@@ -1,0 +1,58 @@
+/* Main Container */
+.main {
+  background: var(--bg-white);
+  border-radius: 2px;
+  box-shadow: 0px 0px 1.5px var(--bright-blue);
+  animation: fadeIn1 0.3s ease-in-out forwards;
+  max-width: 250px;
+}
+
+/* Card Content */
+.card-content {
+  min-width: 250px;
+}
+
+/* Header Section*/
+.header {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  justify-content: center;
+  color: var(--bright-blue);
+
+  span {
+    text-align: center;
+    font-size: 13px;
+    font-weight: 600;
+    margin: 45px 0px 0px 0px;
+  }
+
+  h1 {
+    font-size: 36px;
+    font-weight: 700;
+    margin: 40px 0px;
+  }
+}
+
+/* Accordion Styling */
+.dynamic-content {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  justify-content: center;
+}
+
+/* Feedback Text */
+.result {
+  display: block;
+  font-size: 12px;
+  color: var(--text-disabled);
+  background-color: var(--bg-disabled);
+  margin: 35px 0px;
+  cursor: pointer;
+}
+
+.pointer {
+  color: var(--bright-blue) !important;
+  cursor: pointer;
+}

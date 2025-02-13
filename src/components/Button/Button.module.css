@@ -1,0 +1,38 @@
+/* Accordion Items */
+.accordion-item {
+  border: unset;
+  width: 100%;
+  font-size: 13px;
+  border-radius: 0;
+  background-color: var(--bg-items);
+  color: var(--bright-blue);
+  padding: 16px 16px;
+  text-align: center;
+  cursor: pointer;
+  transition: background 0.3s;
+  border: 1px solid var(--border-items);
+}
+
+.accordion-item:hover {
+  background-color: var(--accordion-hover);
+  border: 1px solid var(--border-items);
+  border-radius: 0;
+}
+
+/* Disabled state */
+.accordion-item:disabled {
+  border: 1px solid var(--border-items);
+  color: var(--text-disabled);
+  pointer-events: none;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+li {
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: #333;
+}

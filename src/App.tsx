@@ -1,51 +1,25 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
-import { Routes, Route, Link } from "react-router-dom";
-import NewScreen from "./screens/sample";
-
-// function App() {
-//   return (
-//     <div className="App">
-//       <header className="App-header">
-//         <img src={logo} className="App-logo" alt="logo" />
-//         <p>
-
-//           I'm working late
-//           Edit <code>src/App.tsx</code> and save to reload.
-//         </p>
-//         <a
-//           className="App-link"
-//           href="https://reactjs.org"
-//           target="_blank"
-//           rel="noopener noreferrer"
-//         >
-//           Learn React
-//         </a>
-//       </header>
-//     </div>
-//   );
-// }
-
-const Home: React.FC = () => (
-  <div>
-    <h1>Home Screen</h1>
-    <p>Welcome to the home page.</p>
-  </div>
-);
-
-const App: React.FC = () => {
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import "./App.css";
+import Home from "./pages/Home/Home";
+import ScorePage from "./pages/Score/Score";
+import NotFound from "./pages/NotFound/NotFound";
+import ActivityPage from "./pages/Activity/Activity";
+import { ActivityProvider } from "./context/ActivityProvider";
+function App() {
   return (
-    <div>
-      <nav>
-        <Link to="/">Home</Link> | <Link to="/new">New Screen</Link>
-      </nav>
-
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/new" element={<NewScreen />} />
-      </Routes>
-    </div>
+    <ActivityProvider>
+      <Router>
+        <div>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/score" element={<ScorePage />} />
+            <Route path="/activity/:name" element={<ActivityPage />} />
+            <Route path="*" element={<NotFound />} /> {/* Catch-all route */}
+          </Routes>
+        </div>
+      </Router>
+    </ActivityProvider>
   );
-};
+}
+
 export default App;
