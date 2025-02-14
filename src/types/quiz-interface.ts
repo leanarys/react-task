@@ -1,5 +1,6 @@
 export interface ActivityContextType {
   quizTemplate?: QuizTemplate;
+  error: boolean
   loading: boolean;
 }
 
@@ -14,7 +15,7 @@ export interface Activity {
   order: number;
   prev_route?: string;
   is_multi_round?: boolean;
-  questions: Question[];
+  questions: Question[] | any;
   rounds?: Round[];
 }
 
@@ -29,8 +30,6 @@ export interface Question {
   questions?: Question[];
 }
 
-// ========================
-
 export interface DisplayCardProps {
   smallHeader?: string;
   mainHeader?: string;
@@ -44,18 +43,4 @@ export interface Round {
   round_title: string;
   order: number;
   questions: Question[];
-}
-
-//=================
-export interface Quiz {
-  name: string;
-  heading: string;
-  activities: Activity[];
-}
-
-export interface ActivityResults {
-  activity_name: string;
-  is_multi_round: boolean;
-  questions?: Question[];
-  rounds?: Round[];
 }

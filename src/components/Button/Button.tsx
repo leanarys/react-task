@@ -6,7 +6,6 @@ type ButtonProps = {
   label: string;
   onClick?: () => void;
   to?: string; // Route path for navigation
-  variant?: "primary" | "secondary" | "danger";
   disabled?: boolean;
 };
 

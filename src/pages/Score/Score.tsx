@@ -14,15 +14,10 @@ const ScorePage: React.FC = () => {
   );
   const [openRoundIndex, setOpenRoundIndex] = useState<number | null>(null);
 
-  console.log(location);
-
   useEffect(() => {
     const results = location.state as Activity;
-
-    console.log("results", results);
     if (!results) {
       navigate("/"); // If no results navigate to home
-      console.log("navigate");
     } else {
       setActivityResults(results);
       if (results?.is_multi_round && results?.questions) {
@@ -34,7 +29,7 @@ const ScorePage: React.FC = () => {
     }
 
     return () => {
-      if (location.state.prev_route == "/activity") {
+      if (location?.state?.prev_route == "/activity") {
         navigate("/"); // If no results navigate to home
       }
     };
@@ -89,7 +84,7 @@ const ScorePage: React.FC = () => {
         {/* Single Round Results */}
         {!activityResults.is_multi_round ? (
           <div className={styles.singeRoundResults}>
-            {activityResults?.questions?.map((item, index) => (
+            {activityResults?.questions?.map((item: Question, index:number) => (
               <div
                 key={index}
                 className={styles.resultItem}

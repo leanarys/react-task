@@ -24,7 +24,7 @@ const DisplayCard: React.FC<DisplayCardProps> = ({
       <div className={styles.cardContent} title={altText}>
         <div className={styles.header}>
           <span>{smallHeader.toUpperCase()}</span>
-          <h1>{mainHeader}</h1>
+          {mainHeader && <h1>{mainHeader}</h1>}
         </div>
         <div className={styles.dynamicContent}>
           {children}
