@@ -84,3 +84,30 @@ li {
   font-size: 14px;
   color: #333;
 }
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.logo-react {
+  width: 100px; /* Adjust as needed */
+  height: 100px;
+  animation: spin 2s linear infinite;
+}
+
+.loading-txt {
+  color: #213547;
+  text-align: center;
+  font-weight: 600;
+}
+
+.error-message{
+  color: #213547;
+  margin: 23px 23px 45px 23px;;
+  font-size: 11px;
+}

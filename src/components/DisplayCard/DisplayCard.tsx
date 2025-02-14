@@ -21,10 +21,10 @@ const DisplayCard: React.FC<DisplayCardProps> = ({
 
   return (
     <main className={styles.main}>
-      <div className={styles.cardContent} title={altText}>
-        <div className={styles.header}>
+      <div className={styles.cardContent}>
+        <div className={styles.header} title={altText}>
           <span>{smallHeader.toUpperCase()}</span>
-          <h1>{mainHeader}</h1>
+          {mainHeader && <h1>{mainHeader}</h1>}
         </div>
         <div className={styles.dynamicContent}>
           {children}

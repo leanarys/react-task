@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useActivityContext } from "../../hooks/useActivityContext"; // Context for shared data
 import styles from "./Activity.module.css";
-import { Activity, Question } from "../../types/quiz-interface";
+import { Activity, Question, Round } from "../../types/quiz-interface";
 import { parseBoldText } from "../../helpers/parseBoldText";
 
 const ActivityPage: React.FC = () => {
@@ -52,7 +52,6 @@ const ActivityPage: React.FC = () => {
 
   // Function to handle user answers for both normal and round-based questions
   const handleAnswer = (isCorrect: boolean, question: Question) => {
-    // console.log("handleAnswer");
     question.user_answer = isCorrect;
 
     if (hasMultipleRounds.current) {
@@ -83,7 +82,6 @@ const ActivityPage: React.FC = () => {
     } else {
       const hasNextQuestion =
         currentQuestionIndex < activity.questions.length - 1;
-      console.log("hasNextQuestion", hasNextQuestion);
       if (hasNextQuestion) {
         setCurrentQuestionIndex((prev) => prev + 1);
       }
@@ -95,13 +93,12 @@ const ActivityPage: React.FC = () => {
     if (userResponses.length > 0) {
       const totalQuestions = hasMultipleRounds.current
         ? activity?.questions.reduce(
-            (acc, round) =>
+            (acc: number, round: Round) =>
               acc + (round.questions ? round.questions?.length : 0),
             0
           )
         : activity?.questions.length;
       if (userResponses.length === totalQuestions) {
-        console.log("All responses collected, navigating to score.");
         navigateToScore();
       }
     }
@@ -204,28 +201,24 @@ const ActivityPage: React.FC = () => {
           <div className={styles.activityBtns}>
             <button
               onClick={() => {
-                if (!activity.questions && !activity.questions) {
                   handleAnswer(
                     true,
                     activity.questions[currentRoundIndex].questions[
                       currentQuestionIndex
                     ]
                   );
-                }
               }}
             >
               CORRECT
             </button>
             <button
               onClick={() => {
-                if (!activity.questions && !activity.questions) {
                   handleAnswer(
                     false,
                     activity.questions[currentRoundIndex].questions[
                       currentQuestionIndex
                     ]
                   );
-                }
               }}
             >
               INCORRECT

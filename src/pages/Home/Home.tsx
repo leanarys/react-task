@@ -5,14 +5,13 @@ import { useActivityContext } from "../../hooks/useActivityContext";
 import reactLogo from "../../assets/react.svg";
 
 const HomePage = () => {
-  const { quizTemplate, loading } = useActivityContext();
-
+  const { quizTemplate, loading, error } = useActivityContext();
+  const header = "CAE";
   if (loading) {
     return (
-      <div className="spinner-container">
-        <img src={reactLogo} className="logo react" alt="React logo" />
-        <div className="spinner">🔄</div>
-        <p>Loading...</p>
+      <div>
+        <img src={reactLogo} className={styles.logoReact} alt="React logo loader" />
+        <p className={styles.loadingTxt}>Loading...</p>
       </div>
     );
   }
@@ -20,29 +19,35 @@ const HomePage = () => {
   return (
     <div>
       <DisplayCard
-        smallHeader="CAE"
-        mainHeader={quizTemplate?.name}
-        footer="RESULTS"
-        altText={quizTemplate?.heading}
+        smallHeader={header}
+        mainHeader={(!error && quizTemplate?.name) ? quizTemplate.name : ""}
+        footer={error ? "" : "RESULTS"}
+        altText={quizTemplate?.heading || ""}
       >
-        <div className={styles.homeContainer}>
-          <div className={styles.accordion}>
-            {/* Dynamically generate buttons based on API data */}
-            {quizTemplate?.activities.map((activity) => (
-              <div className={styles.activity} key={activity.activity_name}>
-                <Button
-                  label={activity.activity_name} // Use API data for button label
-                  to={`/activity/${activity.activity_name}`} // Navigate to dynamic route
-                  variant="primary"
-                  disabled={!activity.questions}
-                />
-              </div>
-            ))}
+        {error ? (
+          <div className={styles.errorMessage}>
+            An error occurred while loading the quiz. Please try again.
           </div>
-        </div>
+        ) : (
+          <div className={styles.homeContainer}>
+            <div className={styles.accordion}>
+              {/* Dynamically generate buttons based on API data */}
+              {quizTemplate?.activities.map((activity) => (
+                <div className={styles.activity} key={activity.activity_name}>
+                  <Button
+                    label={activity.activity_name} // Use API data for button label
+                    to={`/activity/${activity.activity_name}`} // Navigate to dynamic route
+                    disabled={!activity.questions}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </DisplayCard>
     </div>
   );
+  
 };
 
 export default HomePage;

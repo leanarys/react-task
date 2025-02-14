@@ -8,15 +8,16 @@ export const ActivityProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [quizTemplate, setQuizTemplate] = useState<QuizTemplate>();
   const [loading, setLoading] = useState<boolean>(true);
+  const [error, setErrorFlag] = useState<boolean>(false);
 
   useEffect(() => {
-    console.log("");
     const getActivities = async () => {
       try {
         const data = await fetchQuizTemplate();
         setQuizTemplate(data);
       } catch (error) {
-        console.error("Failed to fetch activities", error);
+        console.error("Failed to fetch quiz template", error);
+        setErrorFlag(true);
       } finally {
         setLoading(false);
       }
@@ -25,7 +26,7 @@ export const ActivityProvider: React.FC<{ children: React.ReactNode }> = ({
     getActivities();
   }, []);
   return (
-    <ActivityContext.Provider value={{ quizTemplate, loading }}>
+    <ActivityContext.Provider value={{ quizTemplate, loading, error }}>
       {children}
     </ActivityContext.Provider>
   );
