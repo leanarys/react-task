@@ -16,18 +16,6 @@ const HomePage = () => {
     );
   }
 
-  // if(error){
-  //   return (
-  //     <DisplayCard
-  //     smallHeader={header}
-  //   >
-  //     <div className={styles.errorMessage}>
-  //     An error occurred while loading the quiz. Please try again.
-  //     </div>
-  //     </DisplayCard>
-  //   );
-  // }
-
   return (
     <div>
       <DisplayCard

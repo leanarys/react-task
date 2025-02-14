@@ -49,7 +49,6 @@
   color: var(--text-disabled);
   background-color: var(--bg-disabled);
   margin: 35px 0px;
-  cursor: pointer;
 }
 
 .pointer {
