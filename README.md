@@ -2,22 +2,28 @@
 
 ## Overview
 
-Error Find is a simple quiz application developed with React + TypeScript + Vite. It challenges users to identify the correct answers in various activities. After completing the quiz, users receive their final results based on their performance. Additionally, they can view the answer keys by selecting a question in the results.
+A simple quiz application developed with React + TypeScript + Vite. 
+It challenges users to identify the correct answers in various activities. 
+After completing the quiz, users receive their final results based on their performance. 
+Additionally, they can view the answer keys by selecting a question in the results.
+
+## Live Demo
+[Click here](d34u2pecmygptz.cloudfront.net/)
 
 ## Features
 
 - Interactive quiz experience
 - Two distinct activities
 - Comprehensive result summary
-- Answer keys included in the final results
 
-## Technologies Used
+## Tech Stack
 
-- React – Library for building interactive UIs.
-- TypeScript – Adds static typing to JavaScript.
-- Vite – Fast build tool for development and production.
-- HTML – Structures web pages.
-- CSS – Styles the user interface.
+- React (with TypeScript)
+- Vite 
+- HTML
+- CSS 
+- AWS S3 & CloudFront (for hosting)
+- React Router
   
 ## Installation
 
@@ -44,9 +50,60 @@ To start the development server, run:
    ```
 Then, open your browser and go to http://localhost:5173/.
 
-## Build
+## Project Structure
+### UI and Logic
+```
+/src
+ ├── components/                
+ │   ├── Button/   
+ │   │   ├── Button.module.css   
+ │   │   ├── Button.tsx   
+ │   ├── DisplayCard/  
+ │   │   ├── DisplayCard.module.css   
+ │   │   ├── DisplayCard.tsx  
+ ├── pages/           
+ │   ├── Activity/     
+ │   │   ├── Activity.module.css    
+ │   │   ├── Activity.tsx     
+ │   ├── Home/    
+ │   │   ├── Home.module.css 
+ │   │   ├── Home.tsx 
+ │   ├── NotFound/    
+ │   │   ├── NotFound.module.css 
+ │   │   ├── NotFound.tsx 
+ │   ├── Score/    
+ │   │   ├── Score.module.css 
+ │   │   ├── Score.tsx 
+ ├── hooks/           
+ │   ├── useActivityContext.ts 
+ ├── helpers/           
+ │   ├── parseBoldText.ts   
 
-Run `npm build` to generate the production build. The output will be stored in the `dist/` directory.
+```
+
+### State, Services & Core Setup
+```
+ ├── context/         
+ │   ├── ActivityContext.tsx 
+ │   ├── ActivityProvider.tsx 
+ ├── services/        
+ │   ├── api.ts       
+ ├── types/           
+ │   ├── quiz.types.ts   
+ ├── App.tsx          
+ ├── index.tsx        
+
+```
+
+## API
+**Get Quiz Data**: GET /mock-data/error-find-payload.json
+
+## Deployment
+Deploying on AWS S3 & CloudFront:
+
+1. Run `npm run build` to generate the production build, which will be stored in the `dist/` directory.
+2. Upload the contents of the dist/ folder to your S3 bucket.
+3. Configure CloudFront to serve content from the S3 bucket.
 
 ## Usage
 1. Start the quiz by choosing an activity.
@@ -58,3 +115,4 @@ Run `npm build` to generate the production build. The output will be stored in t
 ## Contact
 
 For any inquiries, reach out via mary.leana.n.reyes@gmail.com
+

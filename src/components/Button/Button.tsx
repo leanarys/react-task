@@ -15,8 +15,13 @@ const Button: React.FC<ButtonProps> = ({
   to,
   disabled = false,
 }) => {
-  const navigate = useNavigate();
+  const navigate = useNavigate(); // React Router hook for navigation
 
+  /**
+ * Handles button click:
+ * - Navigates if `to` is provided.
+ * - Calls `onClick` if available.
+ */
   const handleClick = () => {
     if (to) {
       navigate(to); // Navigate when `to` is provided
@@ -31,7 +36,7 @@ const Button: React.FC<ButtonProps> = ({
       onClick={handleClick}
       disabled={disabled}
     >
-      {label.toUpperCase()}
+      {label.toUpperCase()} {/* Convert label to uppercase for consistency */}
     </button>
   );
 };
