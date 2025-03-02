@@ -73,13 +73,6 @@
 .answer {
   font-weight: bold;
   text-transform: uppercase;
-}
-
-.correct {
-  color: var(--bright-blue);
-}
-
-.incorrect {
   color: var(--bright-blue);
 }
 

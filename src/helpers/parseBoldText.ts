@@ -17,3 +17,15 @@ export const parseBoldText = (text: string): string => {
   // Replace *bold* while ensuring it's not inside a word
   return escapedText.replace(/\B\*(.*?)\*\B/g, "<strong>$1</strong>");
 };
+
+/** 
+ * Checks if the user's answer matches the correct answer. 
+ */
+export const isMatched = (isCorrect?: boolean, userAnswer?: boolean) => 
+  Boolean(isCorrect) === Boolean(userAnswer);
+
+/** 
+ * Joins multiple class names, filtering out falsy values. 
+ */
+export const classNames = (...classes: (string | undefined | false)[]) => 
+  classes.filter(Boolean).join(" ");

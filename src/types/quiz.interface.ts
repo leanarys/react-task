@@ -15,7 +15,8 @@ export interface Activity {
   order: number;
   prev_route?: string;
   is_multi_round?: boolean;
-  questions: Question[] | any;
+  questions: Question[] | any ;
+  // user_responses?: Question[];
   rounds?: Round[];
 }
 

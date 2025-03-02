@@ -6,9 +6,12 @@ import { Activity, Question, Round } from "../../types/quiz.interface";
 import { parseBoldText } from "../../helpers/parseBoldText";
 
 const ActivityPage: React.FC = () => {
-  const { quizTemplate, loading } = useActivityContext(); // Get activities from context
-  const { name } = useParams(); // Get activity name from route
-  const navigate = useNavigate(); // Router navigation
+  // Get activities from context
+  const { quizTemplate, loading } = useActivityContext();
+  // Get activity name from route
+  const { name } = useParams();
+  // Router navigation
+  const navigate = useNavigate();
   const [activity, setActivity] = useState<Activity | null>(null);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [currentRoundIndex, setCurrentRoundIndex] = useState(0);
@@ -101,13 +104,13 @@ const ActivityPage: React.FC = () => {
       const hasNextQuestion =
         currentQuestionIndex < currentRound.questions.length - 1;
       // Checks for the next round
-      const hasNextRound = currentRoundIndex < activity.questions.length - 1;
-      // If there are multiple rounds
+      // const hasNextRound = currentRoundIndex < activity.questions.length - 1;
 
+      // If there are multiple rounds
       if (hasNextQuestion) {
         // Move to the next question within the current round
         setCurrentQuestionIndex((prev) => prev + 1);
-      } else if (hasNextRound) {
+      } else {
         // Move to the next round and reset the question index
         setCurrentRoundIndex((prev) => prev + 1);
         setCurrentQuestionIndex(0);
@@ -129,7 +132,7 @@ const ActivityPage: React.FC = () => {
     if (userResponses.length > 0) {
       // Counts the number of questions
       const totalQuestions = hasMultipleRounds.current
-        ? activity?.questions?.reduce(
+        ? (activity?.questions as Round[])?.reduce(
           (acc: number, round: Round) => acc + (round.questions ? round.questions.length : 0),
           0
         ) || 0
@@ -165,46 +168,32 @@ const ActivityPage: React.FC = () => {
   // Loader
   if (loading || !activity) return <p>Loading...</p>;
 
+  const activityName = activity?.activity_name?.toUpperCase() || "Unknown Activity";
+  const currentQuestionNum = currentQuestionIndex + 1;
+  const roundNum = currentRoundIndex + 1;
+  const roundTitle = activity?.questions?.[currentRoundIndex]?.round_title?.toUpperCase() ?? "Default Title";
+  const stimulus = activity?.questions[currentQuestionIndex].questions?.[currentQuestionIndex]?.stimulus ?? "Default Stimulus";
+  const stimulus2 = activity?.questions[currentQuestionIndex].stimulus ?? "Default Stimulus";
   // Loading completed or activity available
   return (
     <div>
-      {/* Displays the round indicator card if `showRoundCard` is true and multiple rounds exist */}
-      {showRoundCard && hasMultipleRounds.current && (
-        <div className={styles.activityRoundCard}>
-          <div className={styles.activityHeaders}>
-            {/* Display the activity name in uppercase */}
-            <h1 className={styles.activityName}>
-              {activity.activity_name.toUpperCase()}
-            </h1>
-            {/* Show the current round number */}
-            <h1 className={styles.activityQuestionNo}>
-              ROUND {currentRoundIndex + 1}
-            </h1>
-          </div>
-        </div>
-      )}
-
       {/* Single round mode: Displays question interface when there's no multiple rounds */}
       {!hasMultipleRounds.current && (
         <div className={styles.activityContainer}>
           <div className={styles.activityHeaders}>
             {/* Display the activity name in uppercase */}
             <h1 className={styles.activityName}>
-              {activity.activity_name.toUpperCase()}
+              {activityName}
             </h1>
             {/* Show the current question number */}
             <h1 className={styles.activityQuestionNo}>
-              Q{currentQuestionIndex + 1}.
+              Q{currentQuestionNum}.
             </h1>
           </div>
           {/* Display the question text, allowing bold formatting via `parseBoldText` */}
           <p
             className={styles.activityQuestionTxt}
-            dangerouslySetInnerHTML={{
-              __html: parseBoldText(
-                activity.questions[currentQuestionIndex].stimulus
-              ),
-            }}
+            dangerouslySetInnerHTML={{ __html: parseBoldText(stimulus2) }}
           />
           {/* Answer buttons: User selects 'CORRECT' or 'INCORRECT' */}
           <div className={styles.activityBtns}>
@@ -226,43 +215,49 @@ const ActivityPage: React.FC = () => {
         </div>
       )}
 
+      {/* Displays the round indicator card if `showRoundCard` is true and multiple rounds exist */}
+      {showRoundCard && hasMultipleRounds.current && (
+        <div className={styles.activityRoundCard}>
+          <div className={styles.activityHeaders}>
+            {/* Display the activity name in uppercase */}
+            <h1 className={styles.activityName}>
+              {activityName}
+            </h1>
+            {/* Show the current round number */}
+            <h1 className={styles.activityQuestionNo}>
+              ROUND {roundNum}
+            </h1>
+          </div>
+        </div>
+      )}
+
       {/* Multiple rounds mode: Displays the question interface when there are multiple rounds */}
       {hasMultipleRounds.current && !showRoundCard && (
         <div className={styles.activityContainer}>
           <div className={styles.activityHeaders}>
             {/* Display the activity name and round title (fallback to "Default Title" if missing) */}
             <h1 className={styles.activityName}>
-              {activity.activity_name.toUpperCase()} /{" "}
-              {activity?.questions?.[
-                currentRoundIndex
-              ]?.round_title?.toUpperCase() ?? "Default Title"}
+              {activityName} /{" "} {roundTitle}
             </h1>
             {/* Show the current question number */}
             <h1 className={styles.activityQuestioNo}>
-              Q{currentQuestionIndex + 1}.
+              Q{currentQuestionNum}.
             </h1>
           </div>
           {/* Display the question text, allowing bold formatting via `parseBoldText`. 
           Fallbacks to "Default Stimulus" if no question stimulus is available. */}
           <p
             className={styles.activityQuestionTxt}
-            dangerouslySetInnerHTML={{
-              __html: parseBoldText(
-                activity.questions?.[currentRoundIndex]?.questions?.[
-                  currentQuestionIndex
-                ]?.stimulus ?? "Default Stimulus"
-              ),
-            }}
+            dangerouslySetInnerHTML={{__html: parseBoldText(stimulus)}}
           />
           {/* Answer buttons: User selects 'CORRECT' or 'INCORRECT' */}
           <div className={styles.activityBtns}>
+            {/* { const x = activity.questions[currentRoundIndex].questions[currentQuestionIndex]} */}
             <button
               onClick={() => {
                 handleAnswer(
                   true,
-                  activity.questions[currentRoundIndex].questions[
-                  currentQuestionIndex
-                  ]
+                  activity.questions[currentRoundIndex].questions[currentQuestionIndex]
                 );
               }}
             >
