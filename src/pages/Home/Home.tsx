@@ -5,32 +5,34 @@ import { useActivityContext } from "../../hooks/useActivityContext";
 import reactLogo from "../../assets/react.svg";
 
 const HomePage = () => {
-  // Extract quiz data, loading state, and error status from the activity context
+  // Extract quiz data, loading state, and error status from context
   const { quizTemplate, loading, error } = useActivityContext();
+  
   // Default header text
   const header = "CAE";
-  // If loading display the loader
+
+  // Show a loading indicator while fetching data
   if (loading) {
     return (
       <div>
-        {/* React logo as a visual loader */}
+        {/* React logo used as a loading animation */}
         <img src={reactLogo} className={styles.logoReact} alt="React logo loader" />
         <p className={styles.loadingTxt}>Loading...</p>
       </div>
     );
   }
 
-  // Render the main content once loading is complete
+  // Render the main content once data is loaded
   return (
     <div>
-      {/* Reusable Display Card component*/}
+      {/* Reusable Display Card component */}
       <DisplayCard
         smallHeader={header}
-        mainHeader={(!error && quizTemplate?.name) ? quizTemplate.name : ""} // Quiz name if no error
-        footer={error ? "" : "RESULTS"} // Show "RESULTS" footer unless there's an error
+        mainHeader={!error && quizTemplate?.name ? quizTemplate.name : ""} // Show quiz name if no error
+        footer={error ? "" : "RESULTS"} // Show "RESULTS" unless there's an error
         altText={quizTemplate?.heading || ""} // Alternative text from API data
       >
-        {/* Display an error message if the API call fails */}
+        {/* Show error message if the API request fails */}
         {error ? (
           <div className={styles.errorMessage}>
             An error occurred while loading the quiz. Please try again.
@@ -38,13 +40,13 @@ const HomePage = () => {
         ) : (
           <div className={styles.homeContainer}>
             <div className={styles.accordion}>
-              {/* Dynamically generate buttons based fron API data */}
+              {/* Generate activity buttons dynamically from API data */}
               {quizTemplate?.activities.map((activity) => (
                 <div className={styles.activity} key={activity.activity_name}>
                   <Button
-                    label={activity?.activity_name} // Set button text to the activity name
-                    to={`/activity/${activity?.activity_name}`} // Navigate to the specific activity page
-                    disabled={!activity?.questions} // Disable button if the activity has no questions
+                    label={activity.activity_name} // Button text: activity name
+                    to={`/activity/${activity.activity_name}`} // Navigate to the activity page
+                    disabled={!activity.questions} // Disable if there are no questions
                   />
                 </div>
               ))}
@@ -54,7 +56,6 @@ const HomePage = () => {
       </DisplayCard>
     </div>
   );
-
 };
 
 export default HomePage;

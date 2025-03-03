@@ -6,144 +6,162 @@ import { Activity, Question, Round } from "../../types/quiz.interface";
 import { parseBoldText } from "../../helpers/parseBoldText";
 
 const ActivityPage: React.FC = () => {
-  // Get activities from context
+  // Get quiz data and loading state from context
   const { quizTemplate, loading } = useActivityContext();
-  // Get activity name from route
+
+  // Get activity name from the URL params
   const { name } = useParams();
-  // Router navigation
+
+  // Navigation function
   const navigate = useNavigate();
-  const [activity, setActivity] = useState<Activity | null>(null);
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [currentRoundIndex, setCurrentRoundIndex] = useState(0);
-  const [userResponses, setUserResponses] = useState<Question[]>([]);
-  // Controls the visibility of the round transition card
-  const [showRoundCard, setShowRoundCard] = useState(false);
-  // Flag for activity with multiple rounds
+
+  // Tracks whether the activity has multiple rounds
   const hasMultipleRounds = useRef<boolean>(false);
 
-  // Find activity by name when component mounts
+  // Activity data (null until loaded)
+  const [activity, setActivity] = useState<Activity | null>(null);
+
+  // Current question and round indices
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [currentRoundIndex, setCurrentRoundIndex] = useState(0);
+
+  // Current question and round indices
+  const [userResponses, setUserResponses] = useState<Question[]>([]);
+
+  // Controls the visibility of the round transition card
+  const [showRoundCard, setShowRoundCard] = useState(false);
+
+  // Find the activity by name when the component mounts
   useEffect(() => {
-    // Ensure `hasMultipleRounds` starts as `false`
+    // Reset `hasMultipleRounds` before processing
     hasMultipleRounds.current = false;
 
-    // Proceed only when loading is complete
+    // Wait until loading is complete
     if (!loading) {
-      // Find the activity that matches the given name
+      // Look for the activity that matches the given name
       const selectedActivity = quizTemplate?.activities?.find(
         (act) => act.activity_name === name
       );
 
-      // If no matching activity is found, navigate to the "Not Found" page
       if (!selectedActivity) {
+        // Redirect if no matching activity is found
         navigate("/not-found");
       } else {
-        // Set the found activity as the current activity
+        // Store the selected activity
         setActivity(selectedActivity);
-        // Determine if the activity has multiple rounds by checking for `round_title`
-        hasMultipleRounds.current = selectedActivity?.questions?.[0]
-          ?.round_title
-          ? true
-          : false;
-        // If the activity has multiple rounds, show the round transition indicator
-        if (hasMultipleRounds.current) {
-          showRoundIndicator();
-        }
+
+        // Check if the activity has multiple rounds
+        hasMultipleRounds.current = !!selectedActivity.questions?.[0]?.round_title;
+
+        // Show round transition indicator if multiple rounds exist
+        if (hasMultipleRounds.current) showRoundIndicator();
       }
     }
 
     return () => {
-      // Reset `hasMultipleRounds` when the component unmounts.
+      // Reset when the component unmounts
       hasMultipleRounds.current = false;
     };
   }, [loading, quizTemplate?.activities, name, navigate]);
 
 
   /**
-   * Displays the round indicator card for 1.9 seconds.
-   * This function sets `setShowRoundCard` to `true` and then hides it after a timeout.
+   * Temporarily shows the round indicator card for 1.9 seconds.
+   * Sets `showRoundCard` to `true` and hides it after a timeout.
    */
   const showRoundIndicator = () => {
     setShowRoundCard(true);
     setTimeout(() => setShowRoundCard(false), 1900);
   };
 
+
   /**
-   * Handles user answers for both normal and round-based questions
-   * @param isCorrect 
-   * @param question 
-   * @returns 
+   * Handles user answers for both single-round and multi-round quizzes.
+   * Updates the user's responses and progresses through questions or rounds accordingly.
+   * 
+   * @param {boolean} isCorrect - Indicates whether the user's answer is correct.
+   * @param {Question} question - The question being answered.
    */
   const handleAnswer = (isCorrect: boolean, question: Question) => {
-    question.user_answer = isCorrect;
+    const updatedResponses = updateUserResponses(isCorrect, question);
+    setUserResponses(updatedResponses);
 
-    // Sets the round title
+    if (!activity) return;
+
+    hasMultipleRounds.current
+      ? handleMultiRoundProgress()
+      : handleSingleRoundProgress();
+  };
+
+  /**
+   * Updates the user responses state with the latest answer.
+   * 
+   * @param {boolean} isCorrect - Whether the answer is correct.
+   * @param {Question} question - The question being answered.
+   * @returns {Question[]} - Updated user responses.
+   */
+  const updateUserResponses = (isCorrect: boolean, question: Question): Question[] => {
+    question.user_answers.push(isCorrect);
+
     if (hasMultipleRounds.current) {
       question.round_title = `Round ${currentRoundIndex + 1}`;
     }
 
-    // Create a new array with the existing user responses and 
-    // add the current question along with the user's answer (correct or not).
-    const updatedResponses = [
-      ...userResponses,
-      { ...question, user_answer: isCorrect },
-    ];
+    return [...userResponses, { ...question, user_answers: [isCorrect] }];
+  };
 
-    setUserResponses(updatedResponses);
+  /**
+   * Advances to the next question or round in a multi-round quiz.
+   */
+  const handleMultiRoundProgress = () => {
+    const currentRound = activity?.questions[currentRoundIndex];
+    if (!currentRound || !currentRound.questions) return;
 
-    // Exit early if `activity` is not available to prevent errors.
-    if (!activity) return;
+    const hasNextQuestion = currentQuestionIndex < currentRound.questions.length - 1;
 
-    // Activity has multple rounds
-    if (hasMultipleRounds.current) {
-
-      const currentRound = activity.questions[currentRoundIndex];
-      // Exit if no Round or questions
-      if (!currentRound || !currentRound.questions) return;
-
-      // Checks for next question/s
-      const hasNextQuestion =
-        currentQuestionIndex < currentRound.questions.length - 1;
-      // Checks for the next round
-      // const hasNextRound = currentRoundIndex < activity.questions.length - 1;
-
-      // If there are multiple rounds
-      if (hasNextQuestion) {
-        // Move to the next question within the current round
-        setCurrentQuestionIndex((prev) => prev + 1);
-      } else {
-        // Move to the next round and reset the question index
-        setCurrentRoundIndex((prev) => prev + 1);
-        setCurrentQuestionIndex(0);
-        // Show round transition indicator
-        showRoundIndicator();
-      }
-      // If there is only a single round
+    if (hasNextQuestion) {
+      setCurrentQuestionIndex((prev) => prev + 1);
     } else {
-      const hasNextQuestion = currentQuestionIndex < activity.questions.length - 1;
-      if (hasNextQuestion) {
-        // Move to the next question
-        setCurrentQuestionIndex((prev) => prev + 1);
-      }
+      setCurrentRoundIndex((prev) => prev + 1);
+      setCurrentQuestionIndex(0);
+      showRoundIndicator();
+    }
+  };
+
+  /**
+   * Advances to the next question in a single-round quiz.
+   */
+  const handleSingleRoundProgress = () => {
+    const hasNextQuestion = currentQuestionIndex < activity!.questions.length - 1;
+    if (hasNextQuestion) {
+      setCurrentQuestionIndex((prev) => prev + 1);
     }
   };
 
   useEffect(() => {
-    // Ensures there are user responses
     if (userResponses.length > 0) {
-      // Counts the number of questions
-      const totalQuestions = hasMultipleRounds.current
-        ? (activity?.questions as Round[])?.reduce(
-          (acc: number, round: Round) => acc + (round.questions ? round.questions.length : 0),
-          0
-        ) || 0
-        : activity?.questions?.length || 0;
-
-      // Navigates to Score page if responses count matches the number of questions
+      const totalQuestions = calculateTotalQuestions();
       if (userResponses.length === totalQuestions) {
         navigateToScore();
       }
     }
   }, [userResponses]);
+
+  /**
+   * Calculates the total number of questions in the activity.
+   * Handles both single-round and multi-round activities.
+   * 
+   * @returns {number} - The total number of questions.
+   */
+  const calculateTotalQuestions = (): number => {
+    if (hasMultipleRounds.current) {
+      return (activity?.questions as Round[])?.reduce(
+        (acc: number, round: Round) => acc + (round.questions ? round.questions.length : 0),
+        0
+      ) || 0;
+    }
+    return activity?.questions?.length || 0;
+  };
 
   /**
    * Navigates to the Score page and passes relevant state.
@@ -165,19 +183,45 @@ const ActivityPage: React.FC = () => {
     });
   };
 
-  // Loader
+  // Show a loading message while waiting for data
   if (loading || !activity) return <p>Loading...</p>;
 
+  // Get the activity name, defaulting to "Unknown Activity" if missing
   const activityName = activity?.activity_name?.toUpperCase() || "Unknown Activity";
+
+  // Track the current question and round numbers (1-based for better readability)
   const currentQuestionNum = currentQuestionIndex + 1;
   const roundNum = currentRoundIndex + 1;
-  const roundTitle = activity?.questions?.[currentRoundIndex]?.round_title?.toUpperCase() ?? "Default Title";
-  const stimulus = activity?.questions[currentQuestionIndex].questions?.[currentQuestionIndex]?.stimulus ?? "Default Stimulus";
-  const stimulus2 = activity?.questions[currentQuestionIndex].stimulus ?? "Default Stimulus";
-  // Loading completed or activity available
+
+  // Get the current round title, or use a default if it's not available
+  const roundTitle =
+    activity?.questions?.[currentRoundIndex]?.round_title?.toUpperCase() ||
+    "Default Title";
+
+  // Find the current question, adjusting for multi-round vs. single-round quizzes
+  const currentQuestion = hasMultipleRounds.current
+    ? activity?.questions?.[currentRoundIndex]?.questions?.[currentQuestionIndex] // Multi-round structure
+    : activity?.questions?.[currentQuestionIndex]; // Single-round structure
+
+  /**
+   * Handles answer selection.
+   * If there's no valid question, logs an error instead of crashing.
+   */
+  const handleAnswerClick = (isCorrect: boolean) => {
+    if (!currentQuestion) {
+      console.error("No question found", { currentRoundIndex, currentQuestionIndex });
+      return;
+    }
+    handleAnswer(isCorrect, currentQuestion);
+  };
+
+  // Get the question prompt, with a fallback if it's missing
+  const stimulus = currentQuestion?.stimulus ?? "Default Stimulus";
+
+  // Loading completed, activity is available
   return (
     <div>
-      {/* Single round mode: Displays question interface when there's no multiple rounds */}
+      {/* Single-round mode: Display the question interface if there are no multiple rounds */}
       {!hasMultipleRounds.current && (
         <div className={styles.activityContainer}>
           <div className={styles.activityHeaders}>
@@ -190,40 +234,27 @@ const ActivityPage: React.FC = () => {
               Q{currentQuestionNum}.
             </h1>
           </div>
-          {/* Display the question text, allowing bold formatting via `parseBoldText` */}
+          {/* Show the question text, allowing bold formatting */}
           <p
             className={styles.activityQuestionTxt}
-            dangerouslySetInnerHTML={{ __html: parseBoldText(stimulus2) }}
+            dangerouslySetInnerHTML={{ __html: parseBoldText(stimulus) }}
           />
-          {/* Answer buttons: User selects 'CORRECT' or 'INCORRECT' */}
+           {/* Answer buttons */}
           <div className={styles.activityBtns}>
-            <button
-              onClick={() =>
-                handleAnswer(true, activity.questions[currentQuestionIndex])
-              }
-            >
-              CORRECT
-            </button>
-            <button
-              onClick={() =>
-                handleAnswer(false, activity.questions[currentQuestionIndex])
-              }
-            >
-              INCORRECT
-            </button>
+            <button onClick={() => handleAnswerClick(true)}>CORRECT</button>
+            <button onClick={() => handleAnswerClick(false)}>INCORRECT</button>
           </div>
         </div>
       )}
 
-      {/* Displays the round indicator card if `showRoundCard` is true and multiple rounds exist */}
+      {/* Round transition indicator: Only shown for multi-round activities */}
       {showRoundCard && hasMultipleRounds.current && (
         <div className={styles.activityRoundCard}>
           <div className={styles.activityHeaders}>
-            {/* Display the activity name in uppercase */}
+            {/* Display activity name and round number */}
             <h1 className={styles.activityName}>
               {activityName}
             </h1>
-            {/* Show the current round number */}
             <h1 className={styles.activityQuestionNo}>
               ROUND {roundNum}
             </h1>
@@ -231,11 +262,11 @@ const ActivityPage: React.FC = () => {
         </div>
       )}
 
-      {/* Multiple rounds mode: Displays the question interface when there are multiple rounds */}
+      {/* Multi-round mode: Display the question interface if not in transition */}
       {hasMultipleRounds.current && !showRoundCard && (
         <div className={styles.activityContainer}>
           <div className={styles.activityHeaders}>
-            {/* Display the activity name and round title (fallback to "Default Title" if missing) */}
+            {/* Show activity name and round title (fallback if missing) */}
             <h1 className={styles.activityName}>
               {activityName} /{" "} {roundTitle}
             </h1>
@@ -244,37 +275,17 @@ const ActivityPage: React.FC = () => {
               Q{currentQuestionNum}.
             </h1>
           </div>
-          {/* Display the question text, allowing bold formatting via `parseBoldText`. 
-          Fallbacks to "Default Stimulus" if no question stimulus is available. */}
+
+         {/* Show the question text, allowing bold formatting */}
           <p
             className={styles.activityQuestionTxt}
-            dangerouslySetInnerHTML={{__html: parseBoldText(stimulus)}}
+            dangerouslySetInnerHTML={{ __html: parseBoldText(stimulus) }}
           />
-          {/* Answer buttons: User selects 'CORRECT' or 'INCORRECT' */}
+
+           {/* Answer buttons */}
           <div className={styles.activityBtns}>
-            {/* { const x = activity.questions[currentRoundIndex].questions[currentQuestionIndex]} */}
-            <button
-              onClick={() => {
-                handleAnswer(
-                  true,
-                  activity.questions[currentRoundIndex].questions[currentQuestionIndex]
-                );
-              }}
-            >
-              CORRECT
-            </button>
-            <button
-              onClick={() => {
-                handleAnswer(
-                  false,
-                  activity.questions[currentRoundIndex].questions[
-                  currentQuestionIndex
-                  ]
-                );
-              }}
-            >
-              INCORRECT
-            </button>
+            <button onClick={() => handleAnswerClick(true)}>CORRECT</button>
+            <button onClick={() => handleAnswerClick(false)}>INCORRECT</button>
           </div>
         </div>
       )}

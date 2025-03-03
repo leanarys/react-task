@@ -24,7 +24,7 @@ export interface Question {
   is_correct: boolean;
   stimulus: string;
   order: number;
-  user_answer?: boolean;
+  // user_answer?: boolean;
   user_answers: boolean[];
   feedback: string;
   round_title?: string;
