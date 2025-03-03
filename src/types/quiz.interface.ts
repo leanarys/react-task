@@ -45,3 +45,10 @@ export interface Round {
   order: number;
   questions: Question[];
 }
+
+export interface ButtonProps {
+  label: string;
+  onClick?: () => void;
+  to?: string; // Route path for navigation
+  disabled?: boolean;
+};

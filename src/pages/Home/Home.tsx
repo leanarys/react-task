@@ -3,17 +3,19 @@ import DisplayCard from "../../components/DisplayCard/DisplayCard";
 import Button from "../../components/Button/Button";
 import { useActivityContext } from "../../hooks/useActivityContext";
 import reactLogo from "../../assets/react.svg";
+// import Loader from "../../components/Loader/Loader";
 
 const HomePage = () => {
   // Extract quiz data, loading state, and error status from context
   const { quizTemplate, loading, error } = useActivityContext();
-  
+
   // Default header text
   const header = "CAE";
 
   // Show a loading indicator while fetching data
   if (loading) {
     return (
+      // <Loader></Loader>
       <div>
         {/* React logo used as a loading animation */}
         <img src={reactLogo} className={styles.logoReact} alt="React logo loader" />

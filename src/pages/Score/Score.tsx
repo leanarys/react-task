@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import DisplayCard from "../../components/DisplayCard/DisplayCard";
 import styles from "./Score.module.css";
 import { Activity, Question, Round } from "../../types/quiz.interface";
-import { classNames, isMatched, parseBoldText } from "../../helpers/parseBoldText";
+import { classNames, isMatched, parseBoldText } from "../../helpers/helpers";
 
 const ScorePage: React.FC = () => {
   // React Router hooks for navigation  
@@ -19,41 +19,34 @@ const ScorePage: React.FC = () => {
   // Tracks the currently open round (null if none)  
   const [openRoundIndex, setOpenRoundIndex] = useState<number | null>(null);
 
-  /**
-   * Processes activity results and updates the state.  
-   * Redirects the user if no results are available.  
-   * Groups questions when multi-round mode is enabled.  
+    /** 
+   * Handles activity results and updates the state.  
+   * Redirects if no results are found.  
+   * Groups questions if multiple rounds exist.  
    * 
-   * @param {Activity} results - The activity data from the location state.  
+   * @param {Activity} results - The activity data from state.  
    */
-
-  const processActivityResults = (results: Activity) => {
-    // If no results or questions exist, alert the user and redirect  
-    if (!results || !results.questions) {
-      window.alert("No activity results found. Redirecting to home...");
-      return navigate("/");
-    }
-
-    // Group questions if the activity has multiple rounds  
-    if (results.is_multi_round) {
-      const groupedRounds = groupQuestionsByRound(results.questions);
-
-      setActivityResults({
-        ...results, // Keep existing data  
-        rounds: groupedRounds, // Store grouped rounds  
-      });
-    } else {
-      // Store results as-is for single-round activities  
-      setActivityResults(results);
-    }
-  };
+    const processActivityResults = (results: Activity) => {
+      // Redirect if no results  
+      if (!results || !results.questions) {
+        window.alert("No activity results found. Redirecting...");
+        return navigate("/");
+      }
+  
+      // Group questions for multi-round activities  
+      if (results.is_multi_round) {
+        const groupedRounds = groupQuestionsByRound(results.questions);
+        setActivityResults({ ...results, rounds: groupedRounds });
+      } else {
+        setActivityResults(results); // Store as-is for single-round  
+      }
+    };  
 
 
   // Handle location state and redirect if needed  
   useEffect(() => {
     const results = location.state as Activity;
 
-    console.log("results", results);
     processActivityResults(results);
 
     // Redirect to home if the user came from the activity page  
@@ -74,8 +67,6 @@ const ScorePage: React.FC = () => {
   const groupQuestionsByRound = (questions: Question[]): Round[] => {
     const groupedRounds = Object.values(
       questions.reduce((acc, question) => {
-        console.log("acc", acc);
-        console.log("question", question);
 
         const roundKey = question.round_title;
         if (!roundKey) return acc; // Skip if no round title

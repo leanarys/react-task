@@ -1,42 +1,20 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./Button.module.css";
+import { ButtonProps } from "../../types/quiz.interface";
 
-type ButtonProps = {
-  label: string;
-  onClick?: () => void;
-  to?: string; // Route path for navigation
-  disabled?: boolean;
-};
+const Button: React.FC<ButtonProps> = ({ label, onClick, to, disabled = false }) => {
+  const navigate = useNavigate(); // Hook for navigation
 
-const Button: React.FC<ButtonProps> = ({
-  label,
-  onClick,
-  to,
-  disabled = false,
-}) => {
-  const navigate = useNavigate(); // React Router hook for navigation
-
-  /**
- * Handles button click:
- * - Navigates if `to` is provided.
- * - Calls `onClick` if available.
- */
+  /** Handles button click: navigates or triggers `onClick` */
   const handleClick = () => {
-    if (to) {
-      navigate(to); // Navigate when `to` is provided
-    } else if (onClick) {
-      onClick(); // Execute custom function
-    }
+    if (to) navigate(to);
+    else if (onClick) onClick();
   };
 
   return (
-    <button
-      className={styles.accordionItem}
-      onClick={handleClick}
-      disabled={disabled}
-    >
-      {label.toUpperCase()} {/* Convert label to uppercase for consistency */}
+    <button className={styles.accordionItem} onClick={handleClick} disabled={disabled}>
+      {label.toUpperCase()} {/* Ensure uppercase label */}
     </button>
   );
 };

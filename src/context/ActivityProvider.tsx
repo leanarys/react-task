@@ -13,10 +13,9 @@ export const ActivityProvider: React.FC<{ children: React.ReactNode }> = ({
   // State to track if an error occurred
   const [error, setErrorFlag] = useState<boolean>(false);
 
-  /**
-   * Fetches the quiz template data from the API.
-   * Updates state with the retrieved data or sets an error flag if the request fails.
-   * Ensures the loading state is updated once the request completes.
+  /** 
+   * Fetches quiz data from the API.  
+   * Updates state with the data or sets an error if the request fails.  
    */
   const fetchActivities = async () => {
     try {

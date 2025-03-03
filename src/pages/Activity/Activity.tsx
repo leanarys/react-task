@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useActivityContext } from "../../hooks/useActivityContext"; // Context for shared data
 import styles from "./Activity.module.css";
 import { Activity, Question, Round } from "../../types/quiz.interface";
-import { parseBoldText } from "../../helpers/parseBoldText";
+import { parseBoldText } from "../../helpers/helpers";
 
 const ActivityPage: React.FC = () => {
   // Get quiz data and loading state from context
