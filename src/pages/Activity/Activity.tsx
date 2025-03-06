@@ -9,7 +9,7 @@ import ErrorMessage from "../../components/ErrorMessage/ErrorMessage";
 
 const ActivityPage: React.FC = () => {
   // Get quiz data and loading state from context
-  const { quizTemplate, loading } = useActivityContext();
+  const { quizTemplate } = useActivityContext();
 
   // Get activity name from the URL params
   const { name } = useParams();
@@ -39,7 +39,7 @@ const ActivityPage: React.FC = () => {
     hasMultipleRounds.current = false;
 
     // Wait until loading is complete
-    if (!loading) {
+    if (quizTemplate) {
       // Look for the activity that matches the given name
       const selectedActivity = quizTemplate?.activities?.find(
         (act) => act.activity_name === name
@@ -64,7 +64,7 @@ const ActivityPage: React.FC = () => {
       // Reset when the component unmounts
       hasMultipleRounds.current = false;
     };
-  }, [loading, quizTemplate?.activities, name, navigate]);
+  }, [quizTemplate?.activities, name, navigate]);
 
 
   /**
@@ -186,11 +186,11 @@ const ActivityPage: React.FC = () => {
   };
 
   // Show a loading message while waiting for data
-  if (loading) return <Loader></Loader>;
+  if (!quizTemplate || !activity) return <Loader></Loader>;
   
   // Show error message if found
-  if (!loading && !activity) {
-    return <ErrorMessage message=" Something went wrong while fetching activity. Please try again." type="warning" />;
+  if (!activity?.questions) {
+    return <ErrorMessage message="Something went wrong while fetching activity. Please try again." type="warning" />;
   }
     
   // Get the activity name, defaulting to "Unknown Activity" if missing

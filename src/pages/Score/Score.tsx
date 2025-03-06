@@ -5,6 +5,7 @@ import styles from "./Score.module.css";
 import { Activity, Question, Round } from "../../types/quiz.interface";
 import { isMatched, mergeClassNames, parseBoldText } from "../../helpers/helpers";
 import ErrorMessage from "../../components/ErrorMessage/ErrorMessage";
+import Loader from "../../components/Loader/Loader";
 
 const ScorePage: React.FC = () => {
   // React Router hooks for navigation  
@@ -108,8 +109,11 @@ const ScorePage: React.FC = () => {
     setOpenQuestionIndex(isSameSelection ? null : questionIndex);
   };
 
+  // Show a loading message while waiting for data
+  if (!activityResults) return <Loader></Loader>;
+
   // Show error message if found
-  if (!activityResults) {
+  if (!activityResults.questions) {
     return <ErrorMessage message="There was an issue loading the score data. Please try again later." type="error" />;
   }
 
