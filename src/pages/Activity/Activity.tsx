@@ -189,7 +189,7 @@ const ActivityPage: React.FC = () => {
   if (loading) return <Loader></Loader>;
   
   // Show error message if found
-  if (!activity) {
+  if (!loading && !activity) {
     return <ErrorMessage message=" Something went wrong while fetching activity. Please try again." type="warning" />;
   }
     

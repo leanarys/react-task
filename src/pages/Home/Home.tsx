@@ -15,7 +15,7 @@ const HomePage = () => {
   }
 
   // Show error message if found
-  if (error) {
+  if (!loading && error) {
     return <ErrorMessage message="An error occurred while loading the quiz. Please try again." type="error" />;
   }
 
