@@ -1,9 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { useActivityContext } from "../../hooks/useActivityContext"; // Context for shared data
+import { useActivityContext } from "../../hooks/useActivityContext";
 import styles from "./Activity.module.css";
 import { Activity, Question, Round } from "../../types/quiz.interface";
 import { parseBoldText } from "../../helpers/helpers";
+import Loader from "../../components/Loader/Loader";
+import ErrorMessage from "../../components/ErrorMessage/ErrorMessage";
 
 const ActivityPage: React.FC = () => {
   // Get quiz data and loading state from context
@@ -25,7 +27,7 @@ const ActivityPage: React.FC = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [currentRoundIndex, setCurrentRoundIndex] = useState(0);
 
-  // Current question and round indices
+  // Sets the user responses
   const [userResponses, setUserResponses] = useState<Question[]>([]);
 
   // Controls the visibility of the round transition card
@@ -184,8 +186,13 @@ const ActivityPage: React.FC = () => {
   };
 
   // Show a loading message while waiting for data
-  if (loading || !activity) return <p>Loading...</p>;
-
+  if (loading) return <Loader></Loader>;
+  
+  // Show error message if found
+  if (!activity) {
+    return <ErrorMessage message=" Something went wrong while fetching activity. Please try again." type="warning" />;
+  }
+    
   // Get the activity name, defaulting to "Unknown Activity" if missing
   const activityName = activity?.activity_name?.toUpperCase() || "Unknown Activity";
 
@@ -195,8 +202,7 @@ const ActivityPage: React.FC = () => {
 
   // Get the current round title, or use a default if it's not available
   const roundTitle =
-    activity?.questions?.[currentRoundIndex]?.round_title?.toUpperCase() ||
-    "Default Title";
+    activity?.questions?.[currentRoundIndex]?.round_title?.toUpperCase() || "Default Title";
 
   // Find the current question, adjusting for multi-round vs. single-round quizzes
   const currentQuestion = hasMultipleRounds.current

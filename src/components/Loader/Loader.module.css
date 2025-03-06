@@ -1,4 +1,3 @@
-/* Loader.css */
 @keyframes spin {
     0% {
         transform: rotate(0deg);
@@ -11,7 +10,6 @@
 
 .logo-react {
     width: 100px;
-    /* Adjust as needed */
     height: 100px;
     animation: spin 2s linear infinite;
 }

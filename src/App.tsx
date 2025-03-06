@@ -8,7 +8,7 @@ import { ActivityProvider } from "./context/ActivityProvider";
 
 function App() {
   return (
-    // Provides quiz activity context to the entire application
+    // Provides quiz activity context to the entire app
     <ActivityProvider>
       {/* Sets up client-side routing */}
       <Router>
@@ -25,7 +25,6 @@ function App() {
 
             {/* Catch-all route for handling 404 pages */}
             <Route path="*" element={<NotFound />} />
-
           </Routes>
         </div>
       </Router>

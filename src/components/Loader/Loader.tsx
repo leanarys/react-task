@@ -1,4 +1,4 @@
-import styles from "./Loader.module.css"; // Optional for styling
+import styles from "./Loader.module.css";
 import reactLogo from "../../assets/react.svg";
 
 const Loader = () => {

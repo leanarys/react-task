@@ -1,10 +1,17 @@
 // import axios from "axios";
 // import { QuizTemplate } from "../types/quiz-interface";
 
+// Data from S3 Bucket
 // const API_URL = 
 // "https://leanarys-bucket.s3.us-east-1.amazonaws.com/mock-data/error-find-payload.json";
 // // "https://s3.eu-west-2.amazonaws.com/interview.mock.data/payload.json";
 
+/**
+ * Fetches the quiz template from the API.
+ * @async
+ * @throws {Error} If the API request fails or returns invalid data.
+ * @returns {Promise<QuizTemplate>} The fetched quiz template.
+ */
 export const fetchQuizTemplate = async (): Promise<QuizTemplate> => {
   try {
     // const response = await axios.get(API_URL);

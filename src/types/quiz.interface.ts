@@ -15,8 +15,7 @@ export interface Activity {
   order: number;
   prev_route?: string;
   is_multi_round?: boolean;
-  questions: Question[] | any ;
-  // user_responses?: Question[];
+  questions: Question[];
   rounds?: Round[];
 }
 
@@ -24,7 +23,6 @@ export interface Question {
   is_correct: boolean;
   stimulus: string;
   order: number;
-  // user_answer?: boolean;
   user_answers: boolean[];
   feedback: string;
   round_title?: string;
@@ -52,3 +50,8 @@ export interface ButtonProps {
   to?: string; // Route path for navigation
   disabled?: boolean;
 };
+
+export interface ErrorMessageProps {
+  message: string;
+  type?: "error" | "warning";
+}

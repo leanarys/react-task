@@ -15,13 +15,13 @@ export const parseBoldText = (text: string): string => {
 };
 
 /** 
- * Checks if the user's answer is correct.
+ * Checks value A and B matches.
  */
-export const isMatched = (isCorrect?: boolean, userAnswer?: boolean) =>
-  Boolean(isCorrect) === Boolean(userAnswer);
+export const isMatched = (valueA?: boolean | string, valueB?: boolean | string) =>
+  valueA === valueB;
 
 /** 
  * Combines class names, removing falsy values.
  */
-export const classNames = (...classes: (string | undefined | false)[]) =>
+export const mergeClassNames  = (...classes: (string | undefined | false | null)[]) =>
   classes.filter(Boolean).join(" ");

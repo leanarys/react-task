@@ -61,6 +61,12 @@ Then, open your browser and go to http://localhost:5173/.
  │   ├── DisplayCard/  
  │   │   ├── DisplayCard.module.css   
  │   │   ├── DisplayCard.tsx  
+ │   ├── ErrorMessage/  
+ │   │   ├── ErrorMessage.module.css   
+ │   │   ├── ErrorMessage.tsx
+ │   ├── Loader/  
+ │   │   ├── Loader.module.css   
+ │   │   ├── Loader.tsx    
  ├── pages/           
  │   ├── Activity/     
  │   │   ├── Activity.module.css    
@@ -77,7 +83,7 @@ Then, open your browser and go to http://localhost:5173/.
  ├── hooks/           
  │   ├── useActivityContext.ts 
  ├── helpers/           
- │   ├── parseBoldText.ts   
+ │   ├── helpers.ts   
 
 ```
 

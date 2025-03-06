@@ -3,7 +3,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 import DisplayCard from "../../components/DisplayCard/DisplayCard";
 import styles from "./Score.module.css";
 import { Activity, Question, Round } from "../../types/quiz.interface";
-import { classNames, isMatched, parseBoldText } from "../../helpers/helpers";
+import { isMatched, mergeClassNames, parseBoldText } from "../../helpers/helpers";
+import ErrorMessage from "../../components/ErrorMessage/ErrorMessage";
 
 const ScorePage: React.FC = () => {
   // React Router hooks for navigation  
@@ -32,16 +33,14 @@ const ScorePage: React.FC = () => {
         window.alert("No activity results found. Redirecting...");
         return navigate("/");
       }
-  
-      // Group questions for multi-round activities  
-      if (results.is_multi_round) {
-        const groupedRounds = groupQuestionsByRound(results.questions);
-        setActivityResults({ ...results, rounds: groupedRounds });
-      } else {
-        setActivityResults(results); // Store as-is for single-round  
-      }
-    };  
-
+    // Group questions for multi-round activities  
+    if (results.is_multi_round) {
+      const groupedRounds = groupQuestionsByRound(results.questions);
+      setActivityResults({ ...results, rounds: groupedRounds });
+    } else {
+      setActivityResults(results); // Store as-is for single-round  
+    }
+  };
 
   // Handle location state and redirect if needed  
   useEffect(() => {
@@ -109,8 +108,13 @@ const ScorePage: React.FC = () => {
     setOpenQuestionIndex(isSameSelection ? null : questionIndex);
   };
 
-  // Show a loading message until activity results are available
-  if (!activityResults) return <p>Loading...</p>;
+  // Show error message if found
+  if (!activityResults) {
+    return <ErrorMessage message="There was an issue loading the score data. Please try again later." type="error" />;
+  }
+
+  // Merge class names for feedback item with correct style
+  const mergedClassNames = mergeClassNames(styles.feedbackItem, styles.fbCorrect);
 
   // Render the results page inside a DisplayCard
   return (
@@ -143,7 +147,7 @@ const ScorePage: React.FC = () => {
                   {/* Show feedback details if this question is selected */}
                   {openQuestionIndex === index && (
                     <div className={styles.feedbackDetails}>
-                      <div className={classNames(styles.feedbackItem, styles.fbCorrect)}>
+                      <div className={mergedClassNames}>
                         <div className={styles.feedbackIcon}>
                           <span className={styles.icon}>
                             {isCorrect ? '🟢' : '🟡'}
@@ -169,8 +173,8 @@ const ScorePage: React.FC = () => {
         ) : (
           <>
             {/* Multi Round Results */}
-              {activityResults.rounds?.map((round, roundIndex) => {
-                const roundTitle = round.round_title.toUpperCase();
+            {activityResults.rounds?.map((round, roundIndex) => {
+              const roundTitle = round.round_title.toUpperCase();
               return (
                 <div key={roundIndex} className={styles.multiRoundResults}>
                   {/* Display round title */}
@@ -194,10 +198,10 @@ const ScorePage: React.FC = () => {
                             {isCorrect ? "CORRECT" : "FALSE"}
                           </span>
 
-                           {/* Show feedback details if this question is selected */}
+                          {/* Show feedback details if this question is selected */}
                           {isOpen && (
                             <div className={styles.feedbackDetails}>
-                              <div className={classNames(styles.feedbackItem, styles.fbCorrect)}>
+                              <div className={mergedClassNames}>
                                 <div className={styles.feedbackIcon}>
                                   <span className={styles.icon}>
                                     {isCorrect ? '🟢' : '🟡'}
