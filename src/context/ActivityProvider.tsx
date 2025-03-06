@@ -6,17 +6,16 @@ import { QuizTemplate } from "../types/quiz.interface";
 export const ActivityProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  // State to store the quiz template data
+  // Store the quiz template data
   const [quizTemplate, setQuizTemplate] = useState<QuizTemplate>();
-  // State to track loading status
+  // Track loading status
   const [loading, setLoading] = useState<boolean>(true);
-  // State to track if an error occurred
+  // Track if an error occurred
   const [error, setErrorFlag] = useState<boolean>(false);
 
-  /**
-   * Fetches the quiz template data from the API.
-   * Updates state with the retrieved data or sets an error flag if the request fails.
-   * Ensures the loading state is updated once the request completes.
+  /** 
+   * Fetches quiz data from the API.  
+   * Updates state with the data or sets an error if the request fails.  
    */
   const fetchActivities = async () => {
     try {

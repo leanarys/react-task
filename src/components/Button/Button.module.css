@@ -26,13 +26,3 @@
   pointer-events: none;
 }
 
-ul {
-  list-style: none;
-  padding: 0;
-}
-
-li {
-  margin-bottom: 8px;
-  font-size: 14px;
-  color: #333;
-}

@@ -2,6 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./DisplayCard.module.css";
 import { DisplayCardProps } from "../../types/quiz.interface";
+import { isMatched, mergeClassNames } from "../../helpers/helpers";
 
 const DisplayCard: React.FC<DisplayCardProps> = ({
   smallHeader = "",
@@ -12,7 +13,7 @@ const DisplayCard: React.FC<DisplayCardProps> = ({
   children,
 }) => {
   const homeText = "HOME";
-  const navigate = useNavigate();
+  const navigate = useNavigate(); // Hook for navigation
 
   /**
  * Navigates to a specified directory.
@@ -25,6 +26,12 @@ const DisplayCard: React.FC<DisplayCardProps> = ({
     }
   };
 
+  // Add pointer style if it's "HOME"
+  const footerText =  footer === homeText ? styles.pointer : null;
+
+  // Merged class style
+  const mergeClass = mergeClassNames(styles.result, footerText)
+ 
   return (
     <main className={styles.main}>
       <div className={styles.cardContent}>
@@ -39,14 +46,9 @@ const DisplayCard: React.FC<DisplayCardProps> = ({
           {/* Display footer button only if the footer prop exists */}
           {footer && (
             <div
-              className={[
-                styles.result,
-                footer === homeText ? styles.pointer : null, // Add pointer style if it's "HOME"
-              ]
-                .filter(Boolean) // Remove null styles
-                .join(" ")}
+              className={mergeClass}
               onClick={() => {
-                if (footer === homeText) {
+                if (isMatched(footer, homeText)) {
                   navigate("/"); // Navigate to home
                 } else if (directory) {
                   navigateTo(directory); // Navigate to the specified directory
