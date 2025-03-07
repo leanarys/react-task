@@ -44,13 +44,16 @@ const ActivityPage: React.FC = () => {
       const selectedActivity = quizTemplate?.activities?.find(
         (act) => act.activity_name === name
       );
-
+      
       if (!selectedActivity) {
         // Redirect if no matching activity is found
         navigate("/not-found");
       } else {
+        // Resets User Answers
+        const updatedActivity = resetUserAnswers(selectedActivity);
+
         // Store the selected activity
-        setActivity(selectedActivity);
+        setActivity({ ...updatedActivity });
 
         // Check if the activity has multiple rounds
         hasMultipleRounds.current = !!selectedActivity.questions?.[0]?.round_title;
@@ -67,6 +70,37 @@ const ActivityPage: React.FC = () => {
   }, [quizTemplate?.activities, name, navigate]);
 
 
+  /**
+ * Resets user answers if they contain data.
+ * 
+ * @param {Activity} selectedActivity - The activity to update.
+ * @returns {Activity} - A new activity object with reset user answers.
+ */
+  const resetUserAnswers = (selectedActivity: Activity): Activity => {
+    if (!selectedActivity?.questions) return selectedActivity; // Early return if no questions
+  
+    // Reset user_answers for all levels 
+    const resetQuestions = (questions: Question[]): Question[] =>
+      questions.map((question) => {
+        // Start with spreading the question properties
+        const resetQuestion: Question = { ...question };
+  
+        // Reset user_answers only if it exists
+        if (question.user_answers) {
+          resetQuestion.user_answers = [];
+        }
+  
+        // If the question has nested questions, recursively reset their user_answers
+        if (question.questions) {
+          resetQuestion.questions = resetQuestions(question.questions);
+        }
+  
+        return resetQuestion;
+      });
+  
+    return { ...selectedActivity, questions: resetQuestions(selectedActivity.questions) };
+  };
+  
   /**
    * Temporarily shows the round indicator card for 1.9 seconds.
    * Sets `showRoundCard` to `true` and hides it after a timeout.
@@ -98,18 +132,18 @@ const ActivityPage: React.FC = () => {
   /**
    * Updates the user responses state with the latest answer.
    * 
-   * @param {boolean} isCorrect - Whether the answer is correct.
+   * @param {boolean} userAnswer - User's response
    * @param {Question} question - The question being answered.
    * @returns {Question[]} - Updated user responses.
    */
-  const updateUserResponses = (isCorrect: boolean, question: Question): Question[] => {
-    question.user_answers.push(isCorrect);
+  const updateUserResponses = (userAnswer: boolean, question: Question): Question[] => {
+    question.user_answers.push(userAnswer);
 
     if (hasMultipleRounds.current) {
       question.round_title = `Round ${currentRoundIndex + 1}`;
     }
 
-    return [...userResponses, { ...question, user_answers: [isCorrect] }];
+    return [...userResponses, { ...question, user_answers: [userAnswer] }];
   };
 
   /**
@@ -187,12 +221,11 @@ const ActivityPage: React.FC = () => {
 
   // Show a loading message while waiting for data
   if (!quizTemplate || !activity) return <Loader></Loader>;
-  
+
   // Show error message if found
   if (!activity?.questions) {
     return <ErrorMessage message="Something went wrong while fetching activity. Please try again." type="warning" />;
   }
-    
   // Get the activity name, defaulting to "Unknown Activity" if missing
   const activityName = activity?.activity_name?.toUpperCase() || "Unknown Activity";
 
@@ -213,12 +246,12 @@ const ActivityPage: React.FC = () => {
    * Handles answer selection.
    * If there's no valid question, logs an error instead of crashing.
    */
-  const handleAnswerClick = (isCorrect: boolean) => {
+  const handleAnswerClick = (userAnswer: boolean) => {
     if (!currentQuestion) {
       console.error("No question found", { currentRoundIndex, currentQuestionIndex });
       return;
     }
-    handleAnswer(isCorrect, currentQuestion);
+    handleAnswer(userAnswer, currentQuestion);
   };
 
   // Get the question prompt, with a fallback if it's missing
@@ -245,7 +278,7 @@ const ActivityPage: React.FC = () => {
             className={styles.activityQuestionTxt}
             dangerouslySetInnerHTML={{ __html: parseBoldText(stimulus) }}
           />
-           {/* Answer buttons */}
+          {/* Answer buttons */}
           <div className={styles.activityBtns}>
             <button onClick={() => handleAnswerClick(true)}>CORRECT</button>
             <button onClick={() => handleAnswerClick(false)}>INCORRECT</button>
@@ -282,13 +315,13 @@ const ActivityPage: React.FC = () => {
             </h1>
           </div>
 
-         {/* Show the question text, allowing bold formatting */}
+          {/* Show the question text, allowing bold formatting */}
           <p
             className={styles.activityQuestionTxt}
             dangerouslySetInnerHTML={{ __html: parseBoldText(stimulus) }}
           />
 
-           {/* Answer buttons */}
+          {/* Answer buttons */}
           <div className={styles.activityBtns}>
             <button onClick={() => handleAnswerClick(true)}>CORRECT</button>
             <button onClick={() => handleAnswerClick(false)}>INCORRECT</button>
